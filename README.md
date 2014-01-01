@@ -6,6 +6,7 @@
 <ul>
 <li>用户目录下创建bin目录，该目录是缺省的搜索目录。将工具ecosconfig拷贝到该目录下</li>
 <li>将工具gnutools展开安放到~/bin/gnutools/下，并将诸如：i386-elf的bin目录加入到缺省搜索目录</li>
+<li>通过sudo apt-get install tcl安装tcl以支持tclsh</li>
 </ul>
 <h3>用ecosconfig构造</h3>
 <ul>
