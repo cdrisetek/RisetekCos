@@ -1,0 +1,66 @@
+# ====================================================================
+#
+#      bootls.cdl
+#
+#      成都瑞科技术有限公司出品的产品初始启动维护工具。
+#
+
+cdl_package CYGPKG_BTOOLS {
+    display		"BTOOLS 应用"
+	include_dir btools
+
+	compile -library=libextras.a 	btools.c
+
+	description "产品基本维护工具"
+
+	make -priority 320 {
+		<PREFIX>/bin/btools.elf : $(PREFIX)/lib/target.ld $(PREFIX)/lib/libtarget.a $(PREFIX)/lib/libextras.a
+			@sh -c "mkdir -p $(dir $@)"
+			$(CC) $(LDFLAGS) -L$(PREFIX)/lib -Ttarget.ld -o $@
+			$(COMMAND_PREFIX)strip $@ -o $(PREFIX)/bin/mini-btools.elf
+	}
+
+    cdl_option	CYGPKG_BTOOLS_AUTOEXEC {
+        display		"启动后自动加载文件系统并执行"
+	    flavor        bool
+        default_value 0
+        description "启动后自动加载文件系统并执行"
+	}
+
+    cdl_option	CYGPKG_BTOOLS_AUTO_INIT {
+        display		"启动后自动完成工厂生产设置"
+	    flavor        bool
+        default_value 0
+        description "启动后自动完成工厂生产设置"
+	}
+	
+    cdl_component PRODUCE_BUILD_OPTIONS {
+        display		"附加的编译选项"
+        description "附加的编译选项"
+		no_define
+        flavor  none
+        cdl_option PRODUCE_RADIUS_CFLAGS_ADD {
+            display "Additional compiler flags"
+            flavor  data
+            no_define
+            default_value { "" }
+            description   "
+                This option modifies the set of compiler flags for
+                building this package.
+                These flags are used in addition
+                to the set of global flags."
+        }
+
+        cdl_option PRODUCE_RADIUS_CFLAGS_REMOVE {
+            display "Suppressed compiler flags"
+            flavor  data
+            no_define
+            default_value { "" }
+            description   "
+                This option modifies the set of compiler flags for
+                building this package. These flags are removed from
+                the set of global flags if present."
+        }
+    }
+
+}
