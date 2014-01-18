@@ -10,7 +10,7 @@
 </ul>
 <h3>用ecosconfig构造</h3>
 <ul>
-<li>ftp://ftp.ecoscentric.com/pub/ecos/anoncvs/ecosconfig1314-linux.gz 下载到bin目录，并修改名字为 ecosconfig</li>
+<li>ftp://ftp.ecoscentric.com/pub/ecos/anoncvs/ecosconfig1314-linux.gz 下载到bin目录，并展开为 ecosconfig</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages new target template 构造ecos.ecc文件</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages resolve 处理冲突</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages tree 生成编译环境</li>
