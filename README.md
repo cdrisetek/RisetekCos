@@ -1,6 +1,7 @@
 <h3>工具下载地址：</h3>
 <ul>
 <li>ftp://ftp.ecoscentric.com/pub/ecos/gnutools/i386linux/</li>
+<li>ftp://mirror.aarnet.edu.au/pub/sourceware/ecos/gnutools/i386linux/test/ 这里的版本支持 context-a5</li>
 </ul>
 <h3>环境设置</h3>
 <ul>
