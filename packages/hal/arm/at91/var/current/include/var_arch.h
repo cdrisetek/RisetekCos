@@ -55,6 +55,35 @@
 #include <pkgconf/hal.h>
 #include <cyg/hal/hal_io.h>
 
+//=============================================================================
+// Memory access macros
+
+#ifndef CYGARC_CACHED_ADDRESS
+#  define CYGARC_CACHED_ADDRESS(x)                      (x)
+#endif
+#ifndef CYGARC_UNCACHED_ADDRESS
+#  define CYGARC_UNCACHED_ADDRESS(x)                    (x)
+#endif
+#ifndef CYGARC_PHYSICAL_ADDRESS
+#  define CYGARC_PHYSICAL_ADDRESS(x)                    (x)
+#endif
+#ifndef CYGARC_VIRTUAL_ADDRESS
+#  define CYGARC_VIRTUAL_ADDRESS(x)                     (x)
+#endif
+
+#ifndef HAL_MEMORY_BARRIER
+#define HAL_MEMORY_BARRIER()                                            \
+CYG_MACRO_START                                                         \
+    asm volatile (                                                      \
+        "mcr    p15, 0, %0, c7, c10 , 4;" /* drain the write buffer */  \
+        :                                                               \
+        : "r" (0)                                                       \
+        : "memory"                                                      \
+        );                                                              \
+CYG_MACRO_END
+#endif
+
+
 //--------------------------------------------------------------------------
 // Idle thread code.
 // This macro is called in the idle thread loop, and gives the HAL the
@@ -74,7 +103,8 @@ CYG_MACRO_END
 
 #elif defined(CYGHWR_HAL_ARM_AT91_M42800A) || \
       defined(CYGHWR_HAL_ARM_AT91_M55800A) || \
-      defined(CYGHWR_HAL_ARM_AT91SAM7)
+      defined(CYGHWR_HAL_ARM_AT91SAM7) || \
+      defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #define HAL_IDLE_THREAD_ACTION(_count_)                       \
 CYG_MACRO_START                                               \

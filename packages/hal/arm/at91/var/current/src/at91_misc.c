@@ -88,6 +88,14 @@ void hal_hardware_init(void)
 
     // Set up eCos/ROM interfaces
     hal_if_init();
+
+    // Enable caches
+#ifdef CYGSEM_HAL_ENABLE_DCACHE_ON_STARTUP
+    HAL_DCACHE_ENABLE();
+#endif
+#ifdef CYGSEM_HAL_ENABLE_ICACHE_ON_STARTUP
+    HAL_ICACHE_ENABLE();
+#endif
 }
 
 #if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
@@ -335,6 +343,7 @@ void hal_at91_reset_cpu(void)
                    AT91_RST_RCR_PROCRST |                   
                    AT91_RST_RCR_ICERST  |
                    AT91_RST_RCR_PERRST  |
+                   AT91_RST_RCR_EXTRST  |
                    AT91_RST_RCR_KEY);
   while(1) CYG_EMPTY_STATEMENT;
 }

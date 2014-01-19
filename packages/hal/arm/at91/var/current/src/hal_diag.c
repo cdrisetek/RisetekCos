@@ -177,14 +177,14 @@ cyg_hal_plf_serial_getc_timeout(void* __ch_data, cyg_uint8* ch)
     cyg_bool res;
     CYGARC_HAL_SAVE_GP();
 
-    delay_count = chan->msec_timeout * 10; // delay in .1 ms steps
+    delay_count = chan->msec_timeout * 50; // delay in .02 ms steps
 
     for(;;) {
         res = cyg_hal_plf_serial_getc_nonblock(__ch_data, ch);
         if (res || 0 == delay_count--)
             break;
         
-        CYGACC_CALL_IF_DELAY_US(100);
+        CYGACC_CALL_IF_DELAY_US(20);
     }
 
     CYGARC_HAL_RESTORE_GP();
@@ -257,7 +257,7 @@ cyg_hal_plf_serial_isr(void *__ch_data, int* __ctrlc,
 
         HAL_READ_UINT32(chan->base+AT91_US_RHR, c);
         ch = (cyg_uint8)(c & 0xff);
-        if( cyg_hal_is_break( &ch , 1 ) )
+        if( cyg_hal_is_break( (char*)&ch , 1 ) )
             *__ctrlc = 1;
 
         res = CYG_ISR_HANDLED;
@@ -275,7 +275,19 @@ static channel_data_t at91_ser_channels[CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS]
 #if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 1
     { (cyg_uint8*)AT91_USART1, 1000, CYGNUM_HAL_INTERRUPT_USART1, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD},
 #if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 2
-    { (cyg_uint8*)AT91_USART2, 1000, CYGNUM_HAL_INTERRUPT_USART2, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD}
+    { (cyg_uint8*)AT91_USART2, 1000, CYGNUM_HAL_INTERRUPT_USART2, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD},
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 3
+    { (cyg_uint8*)AT91_USART3, 1000, CYGNUM_HAL_INTERRUPT_USART3, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD},
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 4
+    { (cyg_uint8*)AT91_USART4, 1000, CYGNUM_HAL_INTERRUPT_USART4, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD},
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 5
+    { (cyg_uint8*)AT91_USART5, 1000, CYGNUM_HAL_INTERRUPT_USART5, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD},
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 6
+    { (cyg_uint8*)AT91_USART6, 1000, CYGNUM_HAL_INTERRUPT_USART6, CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD}
+#endif
+#endif
+#endif
+#endif
 #endif
 #endif
 #endif
@@ -285,19 +297,102 @@ static void
 cyg_hal_plf_serial_init(void)
 {
     hal_virtual_comm_table_t* comm;
-    int cur;
+    int cur, con;
 
     cur = CYGACC_CALL_IF_SET_CONSOLE_COMM(CYGNUM_CALL_IF_SET_COMM_ID_QUERY_CURRENT);
 
     // Init channels
 #if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 0
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD0);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD0);
+#ifdef AT91_PMC_PCER_US0
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US0);
+#endif
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 1
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD1);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD1);
+#ifdef AT91_PMC_PCER_US1
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US1);
+#endif
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 2
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD2);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD2);
+#ifdef AT91_PMC_PCER_US2
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US2);
+#endif
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 3
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD3);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD3);
+#ifdef AT91_PMC_PCER_US3
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US3);
+#endif
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 4
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD4);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD4);
+#ifdef AT91_PMC_PCER_US4
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US4);
+#endif
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 5
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD5);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD5);
+#ifdef AT91_PMC_PCER_US5
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US5);
+#endif
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 6
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_RXD6);
+    HAL_ARM_AT91_PIO_CFG(AT91_USART_TXD6);
+#ifdef AT91_PMC_PCER_US6
+    HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_PCER, AT91_PMC_PCER_US6);
+#endif
+#endif
+
+    // Init channels
+    for (con = 0; con < CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS; con++) {
+        cyg_hal_plf_serial_init_channel(&at91_ser_channels[con]);
+    }
+
+    // Set channels
+    for (con = 0; con < CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS; con++) {
+        CYGACC_CALL_IF_SET_CONSOLE_COMM(con);
+        comm = CYGACC_CALL_IF_CONSOLE_PROCS();
+        CYGACC_COMM_IF_CH_DATA_SET(*comm, &at91_ser_channels[con]);
+        CYGACC_COMM_IF_WRITE_SET(*comm, cyg_hal_plf_serial_write);
+        CYGACC_COMM_IF_READ_SET(*comm, cyg_hal_plf_serial_read);
+        CYGACC_COMM_IF_PUTC_SET(*comm, cyg_hal_plf_serial_putc);
+        CYGACC_COMM_IF_GETC_SET(*comm, cyg_hal_plf_serial_getc);
+        CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
+        CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
+        CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
+    }
+
+#if 0
+    // Init channels
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 0
     cyg_hal_plf_serial_init_channel(&at91_ser_channels[0]);
+#endif
 #if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 1
     cyg_hal_plf_serial_init_channel(&at91_ser_channels[1]);
+#endif
 #if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 2
     cyg_hal_plf_serial_init_channel(&at91_ser_channels[2]);
 #endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 3
+    cyg_hal_plf_serial_init_channel(&at91_ser_channels[3]);
 #endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 4
+    cyg_hal_plf_serial_init_channel(&at91_ser_channels[4]);
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 5
+    cyg_hal_plf_serial_init_channel(&at91_ser_channels[5]);
+#endif
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 6
+    cyg_hal_plf_serial_init_channel(&at91_ser_channels[6]);
 #endif
     // Setup procs in the vector table
 
@@ -313,6 +408,7 @@ cyg_hal_plf_serial_init(void)
     CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
     CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
     CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
+#endif
 
 #if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 1
     // Set channel 1
@@ -326,8 +422,10 @@ cyg_hal_plf_serial_init(void)
     CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
     CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
     CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
+#endif
 
-#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 2    
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 2
+    // Set channel 2
     CYGACC_CALL_IF_SET_CONSOLE_COMM(2);
     comm = CYGACC_CALL_IF_CONSOLE_PROCS();
     CYGACC_COMM_IF_CH_DATA_SET(*comm, &at91_ser_channels[2]);
@@ -339,6 +437,61 @@ cyg_hal_plf_serial_init(void)
     CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
     CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
 #endif
+
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 3
+    // Set channel 3
+    CYGACC_CALL_IF_SET_CONSOLE_COMM(3);
+    comm = CYGACC_CALL_IF_CONSOLE_PROCS();
+    CYGACC_COMM_IF_CH_DATA_SET(*comm, &at91_ser_channels[3]);
+    CYGACC_COMM_IF_WRITE_SET(*comm, cyg_hal_plf_serial_write);
+    CYGACC_COMM_IF_READ_SET(*comm, cyg_hal_plf_serial_read);
+    CYGACC_COMM_IF_PUTC_SET(*comm, cyg_hal_plf_serial_putc);
+    CYGACC_COMM_IF_GETC_SET(*comm, cyg_hal_plf_serial_getc);
+    CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
+    CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
+    CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
+#endif
+
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 4
+    // Set channel 4
+    CYGACC_CALL_IF_SET_CONSOLE_COMM(4);
+    comm = CYGACC_CALL_IF_CONSOLE_PROCS();
+    CYGACC_COMM_IF_CH_DATA_SET(*comm, &at91_ser_channels[4]);
+    CYGACC_COMM_IF_WRITE_SET(*comm, cyg_hal_plf_serial_write);
+    CYGACC_COMM_IF_READ_SET(*comm, cyg_hal_plf_serial_read);
+    CYGACC_COMM_IF_PUTC_SET(*comm, cyg_hal_plf_serial_putc);
+    CYGACC_COMM_IF_GETC_SET(*comm, cyg_hal_plf_serial_getc);
+    CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
+    CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
+    CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
+#endif
+
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 5
+    // Set channel 5
+    CYGACC_CALL_IF_SET_CONSOLE_COMM(5);
+    comm = CYGACC_CALL_IF_CONSOLE_PROCS();
+    CYGACC_COMM_IF_CH_DATA_SET(*comm, &at91_ser_channels[5]);
+    CYGACC_COMM_IF_WRITE_SET(*comm, cyg_hal_plf_serial_write);
+    CYGACC_COMM_IF_READ_SET(*comm, cyg_hal_plf_serial_read);
+    CYGACC_COMM_IF_PUTC_SET(*comm, cyg_hal_plf_serial_putc);
+    CYGACC_COMM_IF_GETC_SET(*comm, cyg_hal_plf_serial_getc);
+    CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
+    CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
+    CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
+#endif
+
+#if CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS > 6
+    // Set channel 6
+    CYGACC_CALL_IF_SET_CONSOLE_COMM(6);
+    comm = CYGACC_CALL_IF_CONSOLE_PROCS();
+    CYGACC_COMM_IF_CH_DATA_SET(*comm, &at91_ser_channels[6]);
+    CYGACC_COMM_IF_WRITE_SET(*comm, cyg_hal_plf_serial_write);
+    CYGACC_COMM_IF_READ_SET(*comm, cyg_hal_plf_serial_read);
+    CYGACC_COMM_IF_PUTC_SET(*comm, cyg_hal_plf_serial_putc);
+    CYGACC_COMM_IF_GETC_SET(*comm, cyg_hal_plf_serial_getc);
+    CYGACC_COMM_IF_CONTROL_SET(*comm, cyg_hal_plf_serial_control);
+    CYGACC_COMM_IF_DBG_ISR_SET(*comm, cyg_hal_plf_serial_isr);
+    CYGACC_COMM_IF_GETC_TIMEOUT_SET(*comm, cyg_hal_plf_serial_getc_timeout);
 #endif
 #endif
 

@@ -55,6 +55,7 @@
 #include <cyg/infra/cyg_ass.h>          // assertion macros
 
 #include <cyg/hal/hal_io.h>             // IO macros
+#include <cyg/hal/hal_arch.h>
 #include <cyg/hal/hal_platform_ints.h>
 // -------------------------------------------------------------------------
 // Use system clock
@@ -151,27 +152,36 @@ hal_clock_read(cyg_uint32 *pvalue)
 void hal_delay_us(cyg_int32 usecs)
 {
   cyg_int64 ticks;
+  cyg_int32 diff;
   cyg_uint32 val1, val2;
   cyg_uint32 piv;
+
+  HAL_READ_UINT32(AT91_PITC + AT91_PITC_PIIR, val1);
+  val1 &= AT91_PITC_VALUE_MASK;
+  HAL_REORDER_BARRIER();
 
   // Calculate how many PIT ticks the required number of microseconds
   // equate to. We do this calculation in 64 bit arithmetic to avoid
   // overflow.
-  ticks = (((cyg_uint64)usecs) *
-           ((cyg_uint64)CYGNUM_HAL_ARM_AT91_CLOCK_SPEED))/16/1000000LL;
+  ticks = ((cyg_uint64)usecs) * ((cyg_uint64)CYGNUM_HAL_ARM_AT91_CLOCK_SPEED);
 
   // Calculate the wrap around period.
   HAL_READ_UINT32(AT91_PITC + AT91_PITC_PIMR, piv);
-  piv = (piv & AT91_PITC_VALUE_MASK) - 1;
+  if (!(piv & AT91_PITC_PIMR_PITEN)) {
+    // Check that the PIT is running. If not start it.
+    piv = AT91_PITC_VALUE_MASK | AT91_PITC_PIMR_PITEN;
+    HAL_WRITE_UINT32(AT91_PITC + AT91_PITC_PIMR, piv);
+  }
+  piv = (piv & AT91_PITC_VALUE_MASK) + 1;
 
-  hal_clock_read(&val1);
   while (ticks > 0) {
-    hal_clock_read(&val2);
-    if (val2 < val1)
-      ticks -= ((piv + val2) - val1); //overflow occurred
-    else
-      ticks -= (val2 - val1);
+    HAL_READ_UINT32(AT91_PITC + AT91_PITC_PIIR, val2);
+    val2 &= AT91_PITC_VALUE_MASK;
+    diff = val2 - val1;
     val1 = val2;
+    if (diff < 0)
+      diff += piv;
+    ticks -= diff * (16*1000000LL);
   }
 }
 

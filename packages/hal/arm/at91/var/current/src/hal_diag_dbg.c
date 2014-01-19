@@ -85,17 +85,11 @@ cyg_hal_plf_serial_dbg_init_channel(void* __ch_data)
 
     cyg_uint32 baud_value = 0;
     cyg_uint32 baud_rate  = ((channel_data_t*)__ch_data)->baud_rate;
-    
-    /* Enable pins to be driven by peripheral, using peripheral A. */
-    HAL_WRITE_UINT32((AT91_PIO+AT91_PIO_ASR),
-                     (AT91_PIO_PSR_DRXD | 
-                      AT91_PIO_PSR_DTXD));
 
     /* Disables the PIO from controlling the corresponding pin
       (enables peripheral control of the pin). */
-    HAL_WRITE_UINT32((AT91_PIO+AT91_PIO_PDR),
-                     (AT91_PIO_PSR_DRXD | 
-                      AT91_PIO_PSR_DTXD));
+    HAL_ARM_AT91_PIO_CFG(AT91_DBG_DRXD);
+    HAL_ARM_AT91_PIO_CFG(AT91_DBG_DTXD);
 
     /* Disable interrupt */
     HAL_WRITE_UINT32((base+AT91_DBG_IDR), 0xFFFFFFFF);
@@ -200,14 +194,14 @@ cyg_hal_plf_serial_dbg_getc_timeout(void* __ch_data, cyg_uint8* ch)
     cyg_bool res;
     CYGARC_HAL_SAVE_GP();
 
-    delay_count = chan->msec_timeout * 10; // delay in .1 ms steps
+    delay_count = chan->msec_timeout * 50; // delay in .02 ms steps
 
     for (;;) {
         res = cyg_hal_plf_serial_dbg_getc_nonblock(__ch_data, ch);
         if (res || 0 == delay_count--)
             break;
 
-        CYGACC_CALL_IF_DELAY_US(100);
+        CYGACC_CALL_IF_DELAY_US(20);
     }
 
     CYGARC_HAL_RESTORE_GP();
@@ -276,7 +270,7 @@ cyg_hal_plf_serial_dbg_isr(void *__ch_data, int* __ctrlc,
 
       HAL_READ_UINT32(chan->base+AT91_DBG_RHR, c);
       ch = (cyg_uint8)(c & 0xff);
-      if( cyg_hal_is_break( &ch , 1 ) )
+      if( cyg_hal_is_break( (char*)&ch , 1 ) )
         *__ctrlc = 1;
       
       res = CYG_ISR_HANDLED;

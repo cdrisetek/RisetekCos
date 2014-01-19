@@ -121,7 +121,7 @@ void hal_clock_read(cyg_uint32 *pvalue)
 //
 void hal_delay_us(cyg_int32 usecs)
 {
-    cyg_uint32 stat;
+    cyg_uint32 stat, tmr_val;
     cyg_uint64 ticks;
 #if defined(CYGHWR_HAL_ARM_AT91_JTST)
     // TC2 is reserved for AD/DA. Use TC1 instead. 
@@ -137,11 +137,11 @@ void hal_delay_us(cyg_int32 usecs)
     
     //    CYG_ASSERT(ticks < (1 << 16), "Timer overflow");
     
-    if (ticks > (1 << 16))
-      ticks = (1 << 16) - 1;
-    
-    if (ticks == 0)
-      return;
+    while (ticks) {
+        if (ticks > 0xFFFF)
+            tmr_val = 0xFFFF;
+        else
+            tmr_val = ticks;
     
     // Disable counter
     HAL_WRITE_UINT32(timer+AT91_TC_CCR, AT91_TC_CCR_CLKDIS);
@@ -149,7 +149,7 @@ void hal_delay_us(cyg_int32 usecs)
     // Set registers
     HAL_WRITE_UINT32(timer+AT91_TC_CMR, AT91_TC_CMR_CLKS_MCK32);  // 1MHz
     HAL_WRITE_UINT32(timer+AT91_TC_RA, 0);
-    HAL_WRITE_UINT32(timer+AT91_TC_RC, ticks);
+        HAL_WRITE_UINT32(timer+AT91_TC_RC, tmr_val);
 
     // Clear status flags
     HAL_READ_UINT32(timer+AT91_TC_SR, stat);
@@ -161,6 +161,8 @@ void hal_delay_us(cyg_int32 usecs)
     do {
       HAL_READ_UINT32(timer+AT91_TC_SR, stat);
     } while ((stat & AT91_TC_SR_CPC) == 0);
+        ticks -= tmr_val;
+    }
 }
 
 #ifdef CYGFUN_HAL_ARM_AT91_PROFILE_TIMER

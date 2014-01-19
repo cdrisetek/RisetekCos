@@ -280,6 +280,78 @@
 #define AT91_GPIO_PC31      AT91_PIN(2,0,31)
 #endif //AT91_PIOC
 
+#ifdef AT91_PIOD
+// GPIO pins on PIOD.
+#define AT91_GPIO_PD0       AT91_PIN(3,0, 0)
+#define AT91_GPIO_PD1       AT91_PIN(3,0, 1)
+#define AT91_GPIO_PD2       AT91_PIN(3,0, 2)
+#define AT91_GPIO_PD3       AT91_PIN(3,0, 3)
+#define AT91_GPIO_PD4       AT91_PIN(3,0, 4)
+#define AT91_GPIO_PD5       AT91_PIN(3,0, 5)
+#define AT91_GPIO_PD6       AT91_PIN(3,0, 6)
+#define AT91_GPIO_PD7       AT91_PIN(3,0, 7)
+#define AT91_GPIO_PD8       AT91_PIN(3,0, 8)
+#define AT91_GPIO_PD9       AT91_PIN(3,0, 9)
+#define AT91_GPIO_PD10      AT91_PIN(3,0,10)
+#define AT91_GPIO_PD11      AT91_PIN(3,0,11)
+#define AT91_GPIO_PD12      AT91_PIN(3,0,12)
+#define AT91_GPIO_PD13      AT91_PIN(3,0,13)
+#define AT91_GPIO_PD14      AT91_PIN(3,0,14)
+#define AT91_GPIO_PD15      AT91_PIN(3,0,15)
+#define AT91_GPIO_PD16      AT91_PIN(3,0,16)
+#define AT91_GPIO_PD17      AT91_PIN(3,0,17)
+#define AT91_GPIO_PD18      AT91_PIN(3,0,18)
+#define AT91_GPIO_PD19      AT91_PIN(3,0,19)
+#define AT91_GPIO_PD20      AT91_PIN(3,0,20)
+#define AT91_GPIO_PD21      AT91_PIN(3,0,21)
+#define AT91_GPIO_PD22      AT91_PIN(3,0,22)
+#define AT91_GPIO_PD23      AT91_PIN(3,0,23)
+#define AT91_GPIO_PD24      AT91_PIN(3,0,24)
+#define AT91_GPIO_PD25      AT91_PIN(3,0,25)
+#define AT91_GPIO_PD26      AT91_PIN(3,0,26)
+#define AT91_GPIO_PD27      AT91_PIN(3,0,27)
+#define AT91_GPIO_PD28      AT91_PIN(3,0,28)
+#define AT91_GPIO_PD29      AT91_PIN(3,0,29)
+#define AT91_GPIO_PD30      AT91_PIN(3,0,30)
+#define AT91_GPIO_PD31      AT91_PIN(3,0,31)
+#endif //AT91_PIOD
+
+#ifdef AT91_PIOE
+// GPIO pins on PIOE.
+#define AT91_GPIO_PE0       AT91_PIN(4,0, 0)
+#define AT91_GPIO_PE1       AT91_PIN(4,0, 1)
+#define AT91_GPIO_PE2       AT91_PIN(4,0, 2)
+#define AT91_GPIO_PE3       AT91_PIN(4,0, 3)
+#define AT91_GPIO_PE4       AT91_PIN(4,0, 4)
+#define AT91_GPIO_PE5       AT91_PIN(4,0, 5)
+#define AT91_GPIO_PE6       AT91_PIN(4,0, 6)
+#define AT91_GPIO_PE7       AT91_PIN(4,0, 7)
+#define AT91_GPIO_PE8       AT91_PIN(4,0, 8)
+#define AT91_GPIO_PE9       AT91_PIN(4,0, 9)
+#define AT91_GPIO_PE10      AT91_PIN(4,0,10)
+#define AT91_GPIO_PE11      AT91_PIN(4,0,11)
+#define AT91_GPIO_PE12      AT91_PIN(4,0,12)
+#define AT91_GPIO_PE13      AT91_PIN(4,0,13)
+#define AT91_GPIO_PE14      AT91_PIN(4,0,14)
+#define AT91_GPIO_PE15      AT91_PIN(4,0,15)
+#define AT91_GPIO_PE16      AT91_PIN(4,0,16)
+#define AT91_GPIO_PE17      AT91_PIN(4,0,17)
+#define AT91_GPIO_PE18      AT91_PIN(4,0,18)
+#define AT91_GPIO_PE19      AT91_PIN(4,0,19)
+#define AT91_GPIO_PE20      AT91_PIN(4,0,20)
+#define AT91_GPIO_PE21      AT91_PIN(4,0,21)
+#define AT91_GPIO_PE22      AT91_PIN(4,0,22)
+#define AT91_GPIO_PE23      AT91_PIN(4,0,23)
+#define AT91_GPIO_PE24      AT91_PIN(4,0,24)
+#define AT91_GPIO_PE25      AT91_PIN(4,0,25)
+#define AT91_GPIO_PE26      AT91_PIN(4,0,26)
+#define AT91_GPIO_PE27      AT91_PIN(4,0,27)
+#define AT91_GPIO_PE28      AT91_PIN(4,0,28)
+#define AT91_GPIO_PE29      AT91_PIN(4,0,29)
+#define AT91_GPIO_PE30      AT91_PIN(4,0,30)
+#define AT91_GPIO_PE31      AT91_PIN(4,0,31)
+#endif //AT91_PIOE
+
 #if defined(CYGHWR_HAL_ARM_AT91_M55800A)
 
 #define AT91_TC_TCLK3       AT91_PIN(0,0, 0) // Timer 3 Clock signal
@@ -1142,7 +1214,15 @@
 
 #endif // CYGHWR_HAL_ARM_AT91SAM7SE
 
-#else
+
+#elif defined(CYGHWR_HAL_ARM_AT91SAM9)
+
+/* moved to plf_io_sam9xxx.h */
+
+#elif defined(CYGHWR_HAL_ARM_AT91_R40807) || \
+      defined(CYGHWR_HAL_ARM_AT91_R40008) || \
+      defined(CYGHWR_HAL_ARM_AT91_M42800A)
+
 #define AT91_TC_TCLK0    AT91_PIN(0,0, 0) // Timer #0 clock
 #define AT91_TC_TIOA0    AT91_PIN(0,0, 1) // Timer #0 signal A
 #define AT91_TC_TIOB0    AT91_PIN(0,0, 2) // Timer #0 signal B
@@ -1196,6 +1276,9 @@
 #define AT91_PIO_PSR_CS6_A21  0x20000000 // Chip select #6 or A21
 #define AT91_PIO_PSR_CS5_A22  0x40000000 // Chip select #5 or A22
 #define AT91_PIO_PSR_CS4_A23  0x80000000 // Chip select #4 or A23
+
+#else
+#error Unknown AT91 variant
 #endif
 
 #define AT91_PIO_OER  0x10  // Output enable
@@ -1213,7 +1296,7 @@
 #define AT91_PIO_IMR  0x48  // Interrupt mask
 #define AT91_PIO_ISR  0x4C  // Interrupt status
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 #define AT91_PIO_MDER  0x50  // Multi-drive Enable Register
 #define AT91_PIO_MDDR  0x54  // Multi-drive Disable Register
 #define AT91_PIO_MDSR  0x58  // Multi-drive Status Register
@@ -1590,6 +1673,121 @@
 
 #define AT91_MC_SDRAMC 0xB0	// SDRAMC Configuration Registers
 #define AT91_MC_ECC    0xDC	// ECC Configuration Registers
+#elif defined(CYGHWR_HAL_ARM_AT91SAM9)
+
+// Error Correcting Code Controller
+#ifndef AT91_ECC
+#define AT91_ECC    0xFFFFE800
+#endif
+
+// SDRAM Controller
+#ifndef AT91_SDRAMC
+#define AT91_SDRAMC 0xFFFFEA00
+#endif
+
+#define AT91_SDRAMC_MR  0x00
+#define AT91_SDRAMC_MR_MODE_NORM    (0 << 0)
+#define AT91_SDRAMC_MR_MODE_NOP     (1 << 0)
+#define AT91_SDRAMC_MR_MODE_ABP     (2 << 0)
+#define AT91_SDRAMC_MR_MODE_LMR     (3 << 0)
+#define AT91_SDRAMC_MR_MODE_AR      (4 << 0)
+#define AT91_SDRAMC_MR_MODE_ELMR    (5 << 0)
+#define AT91_SDRAMC_MR_MODE_DOWN    (6 << 0)
+
+#define AT91_SDRAMC_TR  0x04
+#define AT91_SDRAMC_TR_COUNT(x)     ((x) & 0xfff)
+
+#define AT91_SDRAMC_CR  0x08
+#define AT91_SDRAMC_CR_NC8          (0 << 0)
+#define AT91_SDRAMC_CR_NC9          (1 << 0)
+#define AT91_SDRAMC_CR_NC10         (2 << 0)
+#define AT91_SDRAMC_CR_NC11         (3 << 0)
+#define AT91_SDRAMC_CR_NR11         (0 << 2)
+#define AT91_SDRAMC_CR_NR12         (1 << 2)
+#define AT91_SDRAMC_CR_NR13         (2 << 2)
+#define AT91_SDRAMC_CR_NB           (1 << 4)
+#define AT91_SDRAMC_CR_CAS(x)       (((x) & 0x3) << 5)
+#define AT91_SDRAMC_CR_DBW          (1 << 7)
+#define AT91_SDRAMC_CR_TWR(x)       (((x) & 0xf) << 8)
+#define AT91_SDRAMC_CR_TRC(x)       (((x) & 0xf) << 12)
+#define AT91_SDRAMC_CR_TRP(x)       (((x) & 0xf) << 16)
+#define AT91_SDRAMC_CR_TRCD(x)      (((x) & 0xf) << 20)
+#define AT91_SDRAMC_CR_TRAS(x)      (((x) & 0xf) << 24)
+#define AT91_SDRAMC_CR_TXSR(x)      (((x) & 0xf) << 28)
+
+#define AT91_SDRAMC_LPR 0x10
+#define AT91_SDRAMC_LPR_LPCB_NONE   (0 << 0)
+#define AT91_SDRAMC_LPR_LPCB_SR     (1 << 0)
+#define AT91_SDRAMC_LPR_LPCB_PD     (2 << 0)
+#define AT91_SDRAMC_LPR_LPCB_DEEP   (3 << 0)
+#define AT91_SDRAMC_LPR_PASR(x)     (((x) & 0x7) << 4)
+#define AT91_SDRAMC_LPR_TCSR(x)     (((x) & 0x3) << 8)
+#define AT91_SDRAMC_LPR_DS(x)       (((x) & 0x3) << 10)
+#define AT91_SDRAMC_LPR_TIMEOUT_0   (0 << 12)
+#define AT91_SDRAMC_LPR_TIMEOUT_64  (1 << 12)
+#define AT91_SDRAMC_LPR_TIMEOUT_128 (1 << 12)
+
+#define AT91_SDRAMC_IER 0x14
+#define AT91_SDRAMC_IER_RES         (1 << 0)
+
+#define AT91_SDRAMC_IDR 0x18
+#define AT91_SDRAMC_IDR_RES         (1 << 0)
+
+#define AT91_SDRAMC_IMR 0x1C
+#define AT91_SDRAMC_IMR_RES         (1 << 0)
+
+#define AT91_SDRAMC_ISR 0x20
+#define AT91_SDRAMC_ISR_RES         (1 << 0)
+
+#define AT91_SDRAMC_MDR 0x24
+#define AT91_SDRAMC_MDR_SDRAM       (0 << 0)
+#define AT91_SDRAMC_MDR_LPSDRAM     (1 << 0)
+
+// Static Memory Controller
+#ifndef AT91_SMC
+#define AT91_SMC    0xFFFFEC00
+#endif
+
+// There are 7 possible chip-select lines for the SMC
+#define AT91_SMC_SETUP_NCS(x)       ((x) * 16)          // setup timing reg
+#define AT91_SMC_SETUP_NWE(x)       (((x) & 0x3f) << 0)
+#define AT91_SMC_SETUP_WR(x)        (((x) & 0x3f) << 8)
+#define AT91_SMC_SETUP_NRD(x)       (((x) & 0x3f) << 16)
+#define AT91_SMC_SETUP_RD(x)        (((x) & 0x3f) << 24)
+
+#define AT91_SMC_PULSE_NCS(x)       ((x) * 16 + 4)      // pulse timing reg
+#define AT91_SMC_PULSE_NWE(x)       (((x) & 0x7f) << 0)
+#define AT91_SMC_PULSE_WR(x)        (((x) & 0x7f) << 8)
+#define AT91_SMC_PULSE_NRD(x)       (((x) & 0x7f) << 16)
+#define AT91_SMC_PULSE_RD(x)        (((x) & 0x7f) << 24)
+
+#define AT91_SMC_CYCLE_NCS(x)       ((x) * 16 + 8)      // cycle timing reg
+#define AT91_SMC_CYCLE_NWE(x)       (((x) & 0x1ff) << 0)
+#define AT91_SMC_CYCLE_NRD(x)       (((x) & 0x1ff) << 16)
+
+#define AT91_SMC_MODE_NCS(x)        ((x) * 16 + 12)     // mode reg
+#define AT91_SMC_MODE_RD_NCS        (0 << 0)
+#define AT91_SMC_MODE_RD_NRD        (1 << 0)
+#define AT91_SMC_MODE_WR_NCS        (0 << 1)
+#define AT91_SMC_MODE_WR_NWE        (1 << 1)
+#define AT91_SMC_MODE_NWAIT_DISABLE (0 << 4)
+#define AT91_SMC_MODE_NWAIT_FREEZE  (2 << 4)
+#define AT91_SMC_MODE_NWAIT_READY   (3 << 4)
+#define AT91_SMC_MODE_BAT_SELECT    (0 << 8)
+#define AT91_SMC_MODE_BAT_WRITE     (1 << 8)
+#define AT91_SMC_MODE_DBW_8BIT      (0 << 12)
+#define AT91_SMC_MODE_DBW_16BIT     (1 << 12)
+#define AT91_SMC_MODE_DBW_32BIT     (2 << 12)
+#define AT91_SMC_MODE_TDF_CYCLES(x) (((x) & 0x0f) << 16)
+#define AT91_SMC_MODE_TDF_MODE_DIS  (0 << 20)
+#define AT91_SMC_MODE_TDF_MODE_OPT  (1 << 20)
+#define AT91_SMC_MODE_PMEN_STD      (0 << 24)
+#define AT91_SMC_MODE_PMEN_ASYNC    (1 << 24)
+#define AT91_SMC_MODE_PS_4BYTE      (0 << 28)
+#define AT91_SMC_MODE_PS_8BYTE      (1 << 28)
+#define AT91_SMC_MODE_PS_16BYTE     (2 << 28)
+#define AT91_SMC_MODE_PS_32BYTE     (3 << 28)
+
 #endif
 
 
@@ -1613,7 +1811,8 @@
 
 #elif defined(CYGHWR_HAL_ARM_AT91_M42800A) || \
       defined(CYGHWR_HAL_ARM_AT91_M55800A) || \
-      defined(CYGHWR_HAL_ARM_AT91SAM7)
+      defined(CYGHWR_HAL_ARM_AT91SAM7) || \
+      defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 // (Advanced) Power Management
 
@@ -1824,6 +2023,10 @@
 #define AT91_PMC_PCER_TC2  (1 <<14) // Timer Counter 2
 #define AT91_PMC_PCER_ADC  (1 <<15) // Analog-to-Digital Converter
 
+#elif defined(CYGHWR_HAL_ARM_AT91SAM9)
+
+/* moved to plf_io_sam9xxx.h */
+
 #else // Something unknown
 
 #error Unknown AT91 variant
@@ -1869,7 +2072,7 @@
 #define AT91_SPI_MR_PS         0x00000002        // Peripheral Select
 #define AT91_SPI_MR_PCSDEC     0x00000004        // Chip Select Decode
 #define AT91_SPI_MR_DIV32      0x00000008        // Clock Selection 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 #define AT91_SPI_MR_MODFDIS (1<<4)               // Mode Failure Detect Disable
 #endif
 #define AT91_SPI_MR_LLB        0x00000080        // Local Loopback Enable
@@ -1936,7 +2139,7 @@
 //=============================================================================
 // Watchdog Timer Controller
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_WDTC
 #define AT91_WDTC 0xFFFFFD40
@@ -1956,12 +2159,16 @@
 #define AT91_WDTC_WDSR 0x08 // Watchdog Status Register
 #define AT91_WDTC_WDSR_UNDER   (1 << 0)  // Underflow has occurred
 #define AT91_WDTC_WDSR_ERROR   (1 << 1)  // Error has occurred
-#endif //CYGHWR_HAL_ARM_AT91SAM7 
+
+#define HAL_WATCHDOG_RESET \
+  HAL_WRITE_UINT32(AT91_WDTC + AT91_WDTC_WDCR, AT91_WDTC_WDCR_RELOAD | AT91_WDTC_WDCR_KEY)
+
+#endif //CYGHWR_HAL_ARM_AT91SAM7 || CYGHWR_HAL_ARM_AT91SAM9
 
 //=============================================================================
 // Reset Controller
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_RST
 #define AT91_RST 0xFFFFFD00
@@ -2089,7 +2296,7 @@
 //=============================================================================
 // Debug Unit
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_DBG
 #define AT91_DBG 0xFFFFF200
@@ -2205,7 +2412,7 @@
 //=============================================================================
 // Periodic Interval Timer Controller
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_PITC
 #define AT91_PITC 0xfffffd30
@@ -2224,7 +2431,7 @@
 //=============================================================================
 // Real Time Timer Controller
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_RTTC
 #define AT91_RTTC 0xFFFFFD20
@@ -2244,7 +2451,7 @@
 //=============================================================================
 // USB Device Port
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_UDP
 #define AT91_UDP 0xFFFB0000
@@ -2310,7 +2517,7 @@
 //=============================================================================
 // Synchronous Serial Controller (SSC)
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_SSC
 #define AT91_SSC 0xFFFD4000
@@ -2443,7 +2650,7 @@
 //=============================================================================
 // Ethernet Controller (EMAC)
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7X)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7X) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_EMAC
 #define AT91_EMAC 0xFFFBC000
@@ -2467,21 +2674,29 @@
 #define AT91_EMAC_NCFG_SPD_100Mbps (1 <<  0) // 100Mbps line speed
 #define AT91_EMAC_NCFG_FD          (1 <<  1) // Full Deplex
 #define AT91_EMAC_NCFG_BR          (1 <<  2) // Bit Rate
+#define AT91_EMAC_NCFG_JFRAME      (1 <<  3) // Jumbo Frame
 #define AT91_EMAC_NCFG_CAF         (1 <<  4) // Copy All Frames
 #define AT91_EMAC_NCFG_NBC         (1 <<  5) // Don't receiver Broadcasts
 #define AT91_EMAC_NCFG_MTI         (1 <<  6) // Multicast Hash Enable
 #define AT91_EMAC_NCFG_UNI         (1 <<  7) // Unicast hash enable
-#define AT91_EMAC_NCFG_BIG         (1 <<  8) // Receive upto 1522 byte frames
+#define AT91_EMAC_NCFG_BIG         (1 <<  8) // Receive upto 1536 byte frames
 #define AT91_EMAC_NCFG_EAE         (1 <<  9) // External Address match Enable
 #define AT91_EMAC_NCFG_CLK_HCLK_8  (0 << 10) // HCLK divided by 8
 #define AT91_EMAC_NCFG_CLK_HCLK_16 (1 << 10) // HCLK divided by 16
 #define AT91_EMAC_NCFG_CLK_HCLK_32 (2 << 10) // HCLK divided by 32
 #define AT91_EMAC_NCFG_CLK_HCLK_64 (3 << 10) // HCLK divided by 64
 #define AT91_EMAC_NCFG_CLK_MASK    (3 << 10) // HCLK mask
-#define AT91_EMAC_NCFG_CLK_RTY     (1 << 12) // Retry Test
-#define AT91_EMAC_NCFG_CLK_RMII    (1 << 13) // Enable RMII mode
-#define AT91_EMAC_NCFG_CLK_MII     (0 << 13) // Enable MII mode
-#define AT91_EMAC_NCFG_RLCE        (0 << 16) // Receive Length Check Enable
+#define AT91_EMAC_NCFG_RTY         (1 << 12) // Retry Test
+#define AT91_EMAC_NCFG_PAE         (1 << 13) // Pause Enable
+#define AT91_EMAC_NCFG_RBOF_0      (0 << 14) // Receive Buffer Offset 0
+#define AT91_EMAC_NCFG_RBOF_1      (1 << 14) // Receive Buffer Offset 1
+#define AT91_EMAC_NCFG_RBOF_2      (2 << 14) // Receive Buffer Offset 2
+#define AT91_EMAC_NCFG_RBOF_3      (3 << 14) // Receive Buffer Offset 3
+#define AT91_EMAC_NCFG_RBOF_MASK   (3 << 14) // RBOF mask
+#define AT91_EMAC_NCFG_RLCE        (1 << 16) // Receive Length Check Enable
+#define AT91_EMAC_NCFG_DRFCS       (1 << 17) // Discard Receive FCS
+#define AT91_EMAC_NCFG_EFHRD       (1 << 18) // Enable Frames to be received in half-duplex mode while transmitting
+#define AT91_EMAC_NCFG_IRXFCS      (1 << 19) // Ignore RX FCS
 
 #define AT91_EMAC_NSR   (0x08) // Network Status
 #define AT91_EMAC_NSR_MDIO_MASK (1 << 1) // MDIO Pin status
@@ -2495,6 +2710,10 @@
 #define AT91_EMAC_TSR_BNQ    (1 << 4) // Buffer Not Queues
 #define AT91_EMAC_TSR_COMP   (1 << 5) // Transmission Complete
 #define AT91_EMAC_TSR_UND    (1 << 6) // Transmit Underrun
+// some bits have different names in different docs
+#define AT91_EMAC_TSR_UBR    AT91_EMAC_TSR_OVR
+#define AT91_EMAC_TSR_TGO    AT91_EMAC_TSR_TXIDLE
+#define AT91_EMAC_TSR_BEX    AT91_EMAC_TSR_BNQ
 
 #define AT91_EMAC_RBQP (0x18) // Receiver Buffer Queue Pointer
 #define AT91_EMAC_TBQP (0x1c) // Transmit Buffer Queue Pointer
@@ -2517,6 +2736,21 @@
 #define AT91_EMAC_ISR_LINK  (1 <<  9) // Link pin changed state
 #define AT91_EMAC_ISR_ROVR  (1 << 10) // Receiver Overrun
 #define AT91_EMAC_ISR_HRESP (1 << 11) // HRESP not OK
+// some bits have different names in different docs
+#define AT91_EMAC_ISR_MFD   AT91_EMAC_ISR_DONE
+#define AT91_EMAC_ISR_RCOMP AT91_EMAC_ISR_RCOM
+#define AT91_EMAC_ISR_RXUBR AT91_EMAC_ISR_RBNA
+#define AT91_EMAC_ISR_TXUBR AT91_EMAC_ISR_TOVR
+#define AT91_EMAC_ISR_RLE   AT91_EMAC_ISR_RTRY
+#define AT91_EMAC_ISR_TXERR AT91_EMAC_ISR_TBRE
+#define AT91_EMAC_ISR_TCOMP AT91_EMAC_ISR_TCOM
+#if defined(CYGHWR_HAL_ARM_AT91SAM9)
+#undef AT91_EMAC_ISR_TIDLE
+#undef AT91_EMAC_ISR_LINK
+#define AT91_EMAC_ISR_PFR   (1 << 12) // Pulse Frame Received
+#define AT91_EMAC_ISR_PTZ   (1 << 13) // Pulse Frame Time Zero
+#endif
+
 #define AT91_EMAC_IER  (0x28) // Interrupt Enable
 #define AT91_EMAC_IDR  (0x2c) // Interrupt Disable
 #define AT91_EMAC_IMR  (0x30) // Interrupt Mask
@@ -2602,7 +2836,7 @@
 // Transmit Buffer Descriptor
 #define AT91_EMAC_TBD_ADDR 0x0  // Address to beginning of buffer
 #define AT91_EMAC_TBD_SR   0x1  // Buffer Status
-#define AT91_EMAC_TBD_SR_LEN_MASK     (0xfff)   // Length of data
+#define AT91_EMAC_TBD_SR_LEN_MASK     (0x7ff)   // Length of data
 #define AT91_EMAC_TBD_SR_EOF          (1 << 15) // End of Frame
 #define AT91_EMAC_TBD_SR_NCRC         (1 << 16) // No CRC added by EMAC
 #define AT91_EMAC_TBD_SR_EXHAUST      (1 << 27) // Buffers exhausted
@@ -2616,7 +2850,7 @@
 //=============================================================================
 // Two Wire Interface (TWI)
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_TWI
 #define AT91_TWI 0xFFFB8000
@@ -2671,19 +2905,8 @@
 //=============================================================================
 // Analog to Digital Convertor (ADC)
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7) || \
-	            defined (CYGHWR_HAL_ARM_AT91_M55800A)
-
-// AT91SAM7 specifics
-#if defined(CYGHWR_HAL_ARM_AT91SAM7)
-#if !defined(AT91_ADC)
-#define AT91_ADC 0xFFFD8000
-#endif
-
-#if !defined(AT91_MAX_ADC_CHAN)
-#define AT91_MAX_ADC_CHAN 8
-#endif
-#endif
+#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9) || \
+                defined (CYGHWR_HAL_ARM_AT91_M55800A)
 
 // AT91_M55800A specifics
 #if defined(CYGHWR_HAL_ARM_AT91_M55800A)
@@ -2698,6 +2921,15 @@
 #if !defined(AT91_MAX_ADC_CHAN)
 #define AT91_MAX_ADC_CHAN 4
 #endif
+#endif
+
+// AT91SAM7 specifics
+#if !defined(AT91_ADC)
+#define AT91_ADC 0xFFFD8000
+#endif
+
+#if !defined(AT91_MAX_ADC_CHAN)
+#define AT91_MAX_ADC_CHAN 8
 #endif
 
 #define AT91_ADC_CR    0x00 // Control
@@ -3009,6 +3241,7 @@
 #define HAL_ARM_AT91_PIO_A(_pin_)               \
   (((_pin_ >> 8) & 0xff) == 0)
 
+#ifndef HAL_ARM_AT91_PIOX_CFG /* may be overloaded by plf_io_sam9xxx.h */
 // Configure a peripheral pin on a specific PIO controller.
 #ifdef AT91_PIO_ASR
 #define HAL_ARM_AT91_PIOX_CFG(_pin_, _nr_, _pio_base_)                  \
@@ -3034,6 +3267,7 @@
   }                                                                     \
   CYG_MACRO_END
 #endif // !AT91_PIO_ASR
+#endif /* ifndef HAL_ARM_AT91_PIOX_CFG */
 
 // Configure a GPIO pin direction on a specific PIO controller.
 #define HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, _nr_, _pio_base_) \
@@ -3244,7 +3478,7 @@
   HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 0, AT91_PIO);               \
   HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 1, AT91_PIOB);              \
   CYG_MACRO_END
-#else
+#elif !defined(AT91_PIOD)
 //----------------------
 // Three PIO controllers
 //----------------------
@@ -3312,6 +3546,170 @@
   HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 1, AT91_PIOB);              \
   HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 2, AT91_PIOC);              \
   CYG_MACRO_END
+
+#elif !defined(AT91_PIOE)
+//----------------------
+// Four PIO controllers
+//----------------------
+
+// Configure a peripheral pin for peripheral operation
+#define HAL_ARM_AT91_PIO_CFG(_pin_)                 \
+  CYG_MACRO_START                                   \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 0, AT91_PIO);        \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 1, AT91_PIOB);       \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 2, AT91_PIOC);       \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 3, AT91_PIOD);       \
+  CYG_MACRO_END
+
+// Configure a GPIO pin direction
+#define HAL_ARM_AT91_GPIO_CFG_DIRECTION(_pin_, _dir_)            \
+  CYG_MACRO_START                                                \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 0, AT91_PIO);   \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 1, AT91_PIOB);  \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 2, AT91_PIOC);  \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 3, AT91_PIOD);  \
+  CYG_MACRO_END
+
+// Configure a GPIO pin pullup resistor
+#define HAL_ARM_AT91_GPIO_CFG_PULLUP(_pin_, _enable_)               \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 0, AT91_PIO);      \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 1, AT91_PIOB);     \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 2, AT91_PIOC);     \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 3, AT91_PIOD);     \
+  CYG_MACRO_END
+
+// Configure Multi Drain on a GPIO
+#define HAL_ARM_AT91_GPIO_CFG_MULTIDRAIN(_pin_, _enable_)           \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 0, AT91_PIO);  \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 1, AT91_PIOB); \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 2, AT91_PIOC); \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 3, AT91_PIOD); \
+  CYG_MACRO_END
+
+// Configure a GPIO pin to generate interrupts
+#define HAL_ARM_AT91_GPIO_CFG_INTERRUPT(_pin_, _enable_)            \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 0, AT91_PIO);   \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 1, AT91_PIOB);  \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 2, AT91_PIOC);  \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 3, AT91_PIOD);  \
+  CYG_MACRO_END
+
+// Set a GPIO pin to 1
+#define HAL_ARM_AT91_GPIO_SET(_pin_)                                \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 0, AT91_PIO);                       \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 1, AT91_PIOB);                      \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 2, AT91_PIOC);                      \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 3, AT91_PIOD);                      \
+  CYG_MACRO_END
+
+// Reset a GPIO pin to 0
+#define HAL_ARM_AT91_GPIO_RESET(_pin_)                              \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 0, AT91_PIO);                     \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 1, AT91_PIOB);                    \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 2, AT91_PIOC);                    \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 3, AT91_PIOD);                    \
+  CYG_MACRO_END
+
+// Get the state of a GPIO pin
+#define HAL_ARM_AT91_GPIO_GET(_pin_, _value_)                        \
+  CYG_MACRO_START                                                    \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 0, AT91_PIO);               \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 1, AT91_PIOB);              \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 2, AT91_PIOC);              \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 3, AT91_PIOD);              \
+  CYG_MACRO_END
+  
+#else
+  
+//----------------------
+// Five PIO controllers
+//----------------------
+
+// Configure a peripheral pin for peripheral operation
+#define HAL_ARM_AT91_PIO_CFG(_pin_)                 \
+  CYG_MACRO_START                                   \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 0, AT91_PIO);        \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 1, AT91_PIOB);       \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 2, AT91_PIOC);       \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 3, AT91_PIOD);       \
+  HAL_ARM_AT91_PIOX_CFG(_pin_, 4, AT91_PIOE);       \
+  CYG_MACRO_END
+
+// Configure a GPIO pin direction
+#define HAL_ARM_AT91_GPIO_CFG_DIRECTION(_pin_, _dir_)            \
+  CYG_MACRO_START                                                \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 0, AT91_PIO);   \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 1, AT91_PIOB);  \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 2, AT91_PIOC);  \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 3, AT91_PIOD);  \
+  HAL_ARM_AT91_GPIOX_CFG_DIRECTION(_pin_, _dir_, 4, AT91_PIOE);  \
+  CYG_MACRO_END
+
+// Configure a GPIO pin pullup resistor
+#define HAL_ARM_AT91_GPIO_CFG_PULLUP(_pin_, _enable_)               \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 0, AT91_PIO);      \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 1, AT91_PIOB);     \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 2, AT91_PIOC);     \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 3, AT91_PIOD);     \
+  HAL_ARM_AT91_GPIOX_CFG_PULLUP(_pin_, _enable_, 4, AT91_PIOE);     \
+  CYG_MACRO_END
+
+// Configure Multi Drain on a GPIO
+#define HAL_ARM_AT91_GPIO_CFG_MULTIDRAIN(_pin_, _enable_)           \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 0, AT91_PIO);  \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 1, AT91_PIOB); \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 2, AT91_PIOC); \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 3, AT91_PIOD); \
+  HAL_ARM_AT91_GPIOX_CFG_MULTIDRAIN(_pin_, _enable_, 4, AT91_PIOE); \
+  CYG_MACRO_END
+
+// Configure a GPIO pin to generate interrupts
+#define HAL_ARM_AT91_GPIO_CFG_INTERRUPT(_pin_, _enable_)            \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 0, AT91_PIO);   \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 1, AT91_PIOB);  \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 2, AT91_PIOC);  \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 3, AT91_PIOD);  \
+  HAL_ARM_AT91_GPIOX_CFG_INTERRUPT(_pin_, _enable_, 4, AT91_PIOE);  \
+  CYG_MACRO_END
+
+// Set a GPIO pin to 1
+#define HAL_ARM_AT91_GPIO_SET(_pin_)                                \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 0, AT91_PIO);                       \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 1, AT91_PIOB);                      \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 2, AT91_PIOC);                      \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 3, AT91_PIOD);                      \
+  HAL_ARM_AT91_GPIOX_SET(_pin_, 4, AT91_PIOE);                      \
+  CYG_MACRO_END
+
+// Reset a GPIO pin to 0
+#define HAL_ARM_AT91_GPIO_RESET(_pin_)                              \
+  CYG_MACRO_START                                                   \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 0, AT91_PIO);                     \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 1, AT91_PIOB);                    \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 2, AT91_PIOC);                    \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 3, AT91_PIOD);                    \
+  HAL_ARM_AT91_GPIOX_RESET(_pin_, 4, AT91_PIOE);                    \
+  CYG_MACRO_END
+
+// Get the state of a GPIO pin
+#define HAL_ARM_AT91_GPIO_GET(_pin_, _value_)                        \
+  CYG_MACRO_START                                                    \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 0, AT91_PIO);               \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 1, AT91_PIOB);              \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 2, AT91_PIOC);              \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 3, AT91_PIOD);              \
+  HAL_ARM_AT91_GPIOX_GET(_pin_, _value_, 4, AT91_PIOE);              \
+  CYG_MACRO_END
+
 #endif //!AT91_PIOB
 
 // Put a GPIO pin to a given state
