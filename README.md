@@ -16,4 +16,5 @@
 <li>ecosconfig --srcdir=/vagrant/eCos/packages resolve 处理冲突</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages tree 生成编译环境</li>
 <li>make编译链接</li>
+<li>在.profile里面加上ECOS_REPOSITORY=/vagrant/eCos/packages，并export ECOS_REPOSITORY后，可以不指明--srcdir</li>
 </ul>
