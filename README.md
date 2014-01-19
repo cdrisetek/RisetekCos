@@ -10,7 +10,7 @@
 </ul>
 <h3>用ecosconfig构造</h3>
 <ul>
-<li>ftp://ftp.ecoscentric.com/pub/ecos/anoncvs/ecosconfig1314-linux.gz 下载到bin目录，并展开、重命名为ecosconfig，用chmod +x修改为可运行属性</li>
+<li>ftp://mirror.aarnet.edu.au/pub/sourceware/ecos/anoncvs/ecos-tools-bin-110209.i386linux.tar.bz2 下载到bin目录，并展开、使用ecosconfig，该版本避免了cr,lf在windows系统下出现的一些问题。</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages new target template 构造ecos.ecc文件</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages resolve 处理冲突</li>
 <li>ecosconfig --srcdir=/vagrant/eCos/packages tree 生成编译环境</li>
