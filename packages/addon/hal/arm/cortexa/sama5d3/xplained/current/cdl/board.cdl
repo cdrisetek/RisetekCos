@@ -1,0 +1,46 @@
+# ====================================================================
+#
+#      hal_rw1020.cdl
+#
+#      www.risetek.com Chengdu Risetek Corp.
+#
+
+cdl_package CYGPKG_HAL_XPLAINED {
+    display       "XPLAINED Mainboard"
+    parent        CYGPKG_HAL_ARM_ARM9
+    requires      CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR
+    hardware
+
+    implements	CYGPKG_HAL_ARM_ARM9_AT91SAM9260_LED
+    implements	CYGINT_HAL_ARM_AT91SAM9260_SERIAL_DBG_HW
+    implements	CYGINT_HAL_ARM_AT91SAM9260_SYS_INTERRUPT
+    implements  CYGINT_DEVS_TELCOM_PHY_REQUIRED
+    implements	CYGHWR_DEV_USBMODEM_POWER_MANAGE_REQUIRED
+	implements	CYGPKG_HAL_USB_MODEM_CONNECTOR
+	
+    include_dir   cyg/hal
+    define_header board_config.h
+    description   "HAL for RW102X support eCos"
+
+    define_proc {
+        puts $::cdl_system_header "#define BOARD_CONFIG_H <pkgconf/board_config.h>"
+        puts $::cdl_system_header "#define CYGPKG_HAL_ARM_ARM9_AT91SAM9260_PORT_INIT"
+		puts $::cdl_system_header "#define HAL_PLATFORM_MACHINE_TYPE 0x44b"
+    }
+
+    compile       misc.c
+
+    cdl_option CYGPKG_HAL_LED_INDICATOR {
+        display		"LED Indicator support"
+        active_if	CYGPKG_DEV_INDICATOR
+		compile     -library=libextras.a led_indicator.c
+        default_value  1
+    }
+
+	cdl_option CYGDAT_IO_CLI_DEVICE_NAME {
+        display       "define console device name"
+        flavor        data
+        default_value {"\"/dev/dbgu\""}
+        description "define console device name"
+    }        
+}

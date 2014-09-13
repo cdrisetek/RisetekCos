@@ -1,0 +1,457 @@
+# ====================================================================
+#
+#      hal_arm_arm9_at91sam9260.cdl
+#
+#      Atmel AT91SRM9260
+#
+# ====================================================================
+
+cdl_package CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR {
+    display       "Atmel AT91SAM9260 HAL"
+    parent        CYGPKG_HAL_ARM
+    implements    CYGINT_HAL_ARM_ARCH_ARM9
+    hardware
+    include_dir   cyg/hal
+    define_header hal_arm_arm9_at91sam9260.h
+    description   "这个软件包定义了在ATMEL AT91SAM9260 CPU上开发的各种开发板的基本抽象"
+
+    compile       at91sam9260_misc.c		\
+    			  at91sam9260_hal_io.c		\
+    			  timer_pit.c				\
+    			  device_misc.c				\
+    			  mmu.c
+
+    compile       at91sam9g20_reset.S
+
+    implements    CYGINT_HAL_DEBUG_GDB_STUBS
+    implements    CYGINT_HAL_DEBUG_GDB_STUBS_BREAK
+    implements    CYGINT_HAL_VIRTUAL_VECTOR_SUPPORT
+    implements    CYGINT_HAL_ARM_THUMB_ARCH
+	implements    CYGINT_HAL_ARM_MEM_REAL_REGION_TOP
+	
+
+    define_proc {
+        puts $::cdl_system_header "#define CYGBLD_HAL_TARGET_H   <pkgconf/hal_arm.h>"
+        puts $::cdl_system_header "#define CYGBLD_HAL_VARIANT_H  <pkgconf/hal_arm_arm9_at91sam9260.h>"
+## TODO: FIXME: the CYGBLD_HAL_PLATFORM_H should be placed on each plateform module and replace the BOARD_CONFIG_H define.
+        puts $::cdl_system_header "#define CYGBLD_HAL_PLATFORM_H <pkgconf/board_config.h>"
+        puts $::cdl_system_header "#define CYGBLD_HAL_ARM_VAR_IO_H"
+        puts $::cdl_system_header "#define CYGBLD_HAL_ARM_VAR_ARCH_H"
+
+		puts $::cdl_system_header "#define USEC_PER_TICK    (CYGNUM_HAL_RTC_NUMERATOR/CYGNUM_HAL_RTC_DENOMINATOR/1000)"
+		puts $::cdl_system_header "#define TICKS_PER_SECOND (1000000000ULL/(CYGNUM_HAL_RTC_NUMERATOR/CYGNUM_HAL_RTC_DENOMINATOR))"
+        
+        puts $::cdl_header "#define HAL_PLATFORM_CPU    \"ARM9\""
+        puts $::cdl_header "#define HAL_PLATFORM_BOARD  \"AT91SAM9260 system\""
+        puts $::cdl_header "#define HAL_PLATFORM_EXTRA  \"\""
+        puts $::cdl_header "#include <pkgconf/system.h>"
+        puts $::cdl_header "#include BOARD_CONFIG_H"
+    }
+
+    cdl_interface CYGINT_HAL_ARM_AT91SAM9260_SERIAL_DBG_HW {
+        display     "Platform has the DBG serial port"
+        description "
+            Some varients of the AT91 have a dedicated debug serial
+            port. The HALs of such a varient should implement this interface
+            so allowing the serial driver to the compiled"
+    }
+
+    cdl_interface CYGINT_HAL_ARM_AT91SAM9260_SYS_INTERRUPT {
+        display     "AT91 core has multiplexed system interrupts"    
+        description "
+            Some AT91 cores have a system controller which multiplexes
+            many interrupts onto the system interrupt. When this interface
+            is enabled the variant hal will perform a second level
+            expansion of these interrupts"
+    }
+
+    cdl_interface CYGHWR_CPLD_HW {
+        display     "Platform has the CPLD on"
+        description "equipment CPLD to extends IO port and hardware function."
+    }
+
+	cdl_component CYG_HAL_STARTUP {
+		display       "Startup type"
+		flavor        data
+		legal_values  { "RAM" "ROMRAM" }
+		default_value  { "ROMRAM" }
+		no_define
+		define -file system.h CYG_HAL_STARTUP
+		description   "support two start model"
+	}
+
+	cdl_option CYGPKG_HAL_ARM_ARM9_AT91SAM9260_BOOT_SPI {
+		display      "BOOT from spi flash"
+		default_value  0
+	}
+
+    cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD {
+        display       "Diagnostic serial port baud rate"
+        flavor        data
+        legal_values  9600 19200 38400 57600 115200
+        default_value 115200
+        description   "
+            This option selects the baud rate used for the diagnostic port.
+            Note: this should match the value chosen for the GDB port if the
+            diagnostic and GDB port are the same."
+    }
+
+    cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL_BAUD {
+        display       "GDB serial port baud rate"
+        flavor        data
+        legal_values  9600 19200 38400 57600 115200 230400
+        default_value 115200
+        description   "
+            This option selects the baud rate used for the diagnostic port.
+            Note: this should match the value chosen for the GDB port if the
+            diagnostic and GDB port are the same."
+    }
+
+    cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS {
+        display      "Number of communication channels on the board"
+        flavor       data
+        calculated   1
+    }
+
+    cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_DEFAULT {
+        display      "Default console channel."
+        flavor       data
+        legal_values 0 to CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS-1
+        calculated   0
+    }
+
+    cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL {
+        display          "Debug serial port"
+        active_if        CYGPRI_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL_CONFIGURABLE
+        flavor data
+        legal_values     0 to CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS-1
+        default_value    0
+        description      "
+            The AT91SAM9260 boards have two serial ports. This option
+            chooses which port will be used to connect to a host
+            running GDB."
+     }
+
+     cdl_option CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL {
+         display         "Diagnostic serial port"
+         active_if       CYGPRI_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_CONFIGURABLE
+         flavor data
+         legal_values    0 to CYGNUM_HAL_VIRTUAL_VECTOR_COMM_CHANNELS-1
+         default_value   CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_DEFAULT
+         description     "
+             The AT91SAM9260 boards have two serial ports.  This option
+             chooses which port will be used for diagnostic output."
+     }
+
+    cdl_option CYGBLD_HAL_ARM_AT91SAM9260_SERIAL_DBG {
+        display       "Enable the use of the DBG serial port"
+        flavor        bool
+        active_if     CYGINT_HAL_ARM_AT91SAM9260_SERIAL_DBG_HW
+        active_if     !CYGBLD_HAL_ARM_AT91SAM9260_SERIAL_UART
+        requires      CYGINT_HAL_ARM_AT91SAM9260_SYS_INTERRUPT
+        default_value 0
+
+        compile       hal_diag_dbg.c 
+        requires      CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL == 0
+        requires      CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL == 0
+
+        description   "
+            The driver for the dedicated DBG UART will be compiled in the
+            varient HAL when this option is enabled."
+    }
+
+    cdl_option CYGBLD_HAL_ARM_AT91SAM9260_SERIAL_UART {
+        display       "Enable the use of the UARTS for debug output"
+        flavor        bool
+        active_if     !CYGBLD_HAL_ARM_AT91SAM9260_SERIAL_DBG
+        requires      !CYGBLD_HAL_ARM_AT91SAM9260_SERIAL_DBG
+        default_value 0
+        compile       hal_diag.c 
+        description   "        
+            The driver for using the UARTS will be compiled in the
+            varient HAL when this option is enabled."
+    }
+
+    cdl_option CYGOPT_HAL_ARM_AT91SAM9_PLL_DEFAULT {
+		display       "Set default PLLA value for CPU"
+		flavor        bool
+        default_value 1
+		description   "Fix CPU Speed with default value"
+    }
+
+    # Both PLLs are in bypass mode on startup.
+    cdl_option CYGNUM_HAL_ARM_AT91SAM9260_PLLA_CLOCK {
+        display       "锁相环A时钟频率"
+        flavor        data
+        legal_values  48054857 96109714 179712000 18432000 198656000 442368000 497664000 534528000 792576000
+        default_value { 198656000 }
+        description   "锁相环A时钟频率提供给处理器"
+    }
+
+    cdl_option CYGNUM_HAL_ARM_AT91SAM9260_PLLB_CLOCK {
+        display       "锁相环B时钟频率"
+        flavor        data
+        legal_values  48054857
+        default_value { 48054857 }
+        description   "锁相环B时钟频率提供给USB"
+    }
+
+
+    cdl_option CYGNUM_HAL_ARM_AT91SAM9260_MARSTER_CLOCK_DIV {
+        display       "ARM926EJ外部总线时钟分频值"
+        flavor        data
+        legal_values  1 2 4 6
+        default_value { 2 }
+        description   "This is the ARM920T AHB bus operating frequency (HCLK)."
+    }
+
+    # Real-time clock/counter specifics
+    cdl_component CYGNUM_HAL_RTC_CONSTANTS {
+        display       "Real-time clock constants"
+        flavor        none
+        no_define
+
+        cdl_option CYGNUM_HAL_RTC_NUMERATOR {
+            display       "Real-time clock numerator"
+            flavor        data
+            calculated    1000000000
+        }
+        cdl_option CYGNUM_HAL_RTC_DENOMINATOR {
+            display       "Real-time clock denominator"
+            flavor        data
+            calculated    10000
+        }
+
+    }
+
+
+    # Both WATCHDOG on startup.
+    cdl_option CYGNUM_HAL_ARM_AT91SAM9260_DISABLE_WATCHDOG {
+        display       "Disable AT91SAM9260 WATCHDOG"
+        flavor        bool
+        default_value !CYGSEM_ADDON_REDBOOT_WATCHDOG_REFRESH
+        description   "Disable AT91SAM9260 WATCHDOG"
+    }
+
+
+    cdl_component CYGBLD_GLOBAL_OPTIONS {
+        display "Global build options"
+        flavor  none
+        no_define
+        description   "
+            Global build options including control over
+            compiler flags, linker flags and choice of toolchain."
+
+        parent  CYGPKG_NONE
+
+        cdl_option CYGBLD_GLOBAL_COMMAND_PREFIX {
+            display "Global command prefix"
+            flavor  data
+            no_define
+            default_value { "arm-eabi" }
+            description "
+                This option specifies the command prefix used when
+                invoking the build tools."
+        }
+
+        cdl_option CYGBLD_GLOBAL_CFLAGS {
+            display "Global compiler flags"
+            flavor  data
+            no_define
+            default_value { CYGBLD_GLOBAL_WARNFLAGS . CYGBLD_ARCH_CFLAGS . (CYGPKG_BACKTRACE ? " -fno-omit-frame-pointer -mapcs-frame " : "") .
+                            "-mcpu=arm926ej-s -pipe -g -O2 -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions" }
+            description   "
+                This option controls the global compiler flags which are used to
+                compile all packages by default. Individual packages may define
+                options which override these global flags."
+        }
+
+        cdl_option CYGBLD_GLOBAL_LDFLAGS {
+            display "Global linker flags"
+            flavor  data
+            no_define
+            default_value { CYGBLD_ARCH_LDFLAGS . "-mcpu=arm926ej-s -pipe -Wl,--gc-sections -Wl,-static -g -O2 -nostdlib" }
+            description   "
+                This option controls the global linker flags. Individual
+                packages may define options which override these global flags."
+        }
+
+        cdl_option CYGBLD_BUILD_GDB_STUBS {
+            display "Build GDB stub ROM image"
+            default_value 0
+            requires { CYG_HAL_STARTUP == "ROM" }
+            requires CYGSEM_HAL_ROM_MONITOR
+            requires CYGBLD_BUILD_COMMON_GDB_STUBS
+            requires CYGDBG_HAL_DEBUG_GDB_INCLUDE_STUBS
+            requires CYGDBG_HAL_DEBUG_GDB_BREAK_SUPPORT
+            requires CYGDBG_HAL_DEBUG_GDB_THREAD_SUPPORT
+            requires ! CYGDBG_HAL_COMMON_INTERRUPTS_SAVE_MINIMUM_CONTEXT
+            requires ! CYGDBG_HAL_COMMON_CONTEXT_SAVE_MINIMUM
+            no_define
+            description "
+                This option enables the building of the GDB stubs for the
+                board. The common HAL controls takes care of most of the
+                build process, but the final conversion from ELF image to
+                binary data is handled by the platform CDL, allowing
+                relocation of the data if necessary."
+
+            make -priority 320 {
+                <PREFIX>/bin/gdb_module.bin : <PREFIX>/bin/gdb_module.img
+                $(OBJCOPY) -O binary $< $@
+            }
+        }
+   }
+
+
+    cdl_component CYGPKG_HAL_ARM_ARM9_AT91SAM9260_OPTIONS {
+        display "ARM9/AT91SAM9260 build options"
+        flavor  none
+        no_define
+        description   "
+            Package specific build options including control over
+            compiler flags used only in building this package,
+            and details of which tests are built."
+
+        cdl_option CYGPKG_HAL_ARM_ARM9_AT91SAM9260_CFLAGS_ADD {
+            display "Additional compiler flags"
+            flavor  data
+            no_define
+            default_value { "" }
+            description   "
+                This option modifies the set of compiler flags for
+                building the ARM9 AT91SAM9260 HAL. These flags are used in addition
+                to the set of global flags."
+        }
+
+        cdl_option CYGPKG_HAL_ARM_ARM9_AT91SAM9260_CFLAGS_REMOVE {
+            display "Suppressed compiler flags"
+            flavor  data
+            no_define
+            default_value { "" }
+            description   "
+                This option modifies the set of compiler flags for
+                building the ARM9 AT91SAM9260 HAL. These flags are removed from
+                the set of global flags if present."
+        }
+
+        cdl_option CYGPKG_HAL_ARM_ARM9_AT91SAM9260_TESTS {
+            display "ARM9/AT91SAM9260 tests"
+            flavor  data
+            no_define
+            calculated { "" }
+            description   "
+                This option specifies the set of tests for the ARM9/AT91SAM9260 HAL."
+        }
+    }
+
+
+    cdl_option CYGSEM_HAL_ROM_MONITOR {
+        display       "Behave as a ROM monitor"
+        flavor        bool
+        default_value 0
+        parent        CYGPKG_HAL_ROM_MONITOR
+        requires      { (CYG_HAL_STARTUP == "ROM") || (CYG_HAL_STARTUP == "ROMRAM") }
+        description   "
+            Enable this option if this program is to be used as a ROM monitor,
+            i.e. applications will be loaded into RAM on the board, and this
+            ROM monitor may process exceptions or interrupts generated from the
+            application. This enables features such as utilizing a separate
+            interrupt stack when exceptions are generated."
+    }
+
+    cdl_option CYGSEM_HAL_USE_ROM_MONITOR {
+         display       "Work with a ROM monitor"
+         flavor        booldata
+         legal_values  { "GDB_stubs" }
+         default_value { CYG_HAL_STARTUP == "RAM" ? "GDB_stubs" : 0 }
+         parent        CYGPKG_HAL_ROM_MONITOR
+         requires      { CYG_HAL_STARTUP == "RAM" }
+         description   "
+             Support can be enabled for different varieties of ROM monitor.
+             This support changes various eCos semantics such as the encoding
+             of diagnostic output, or the overriding of hardware interrupt
+             vectors.
+             \"GDB_stubs\" provides support when GDB stubs are included in
+             the ROM monitor or boot ROM."
+     }
+
+    cdl_component CYGPKG_REDBOOT_HAL_OPTIONS {
+        display       "Redboot HAL options"
+        flavor        none
+        no_define
+        parent        CYGPKG_REDBOOT
+        active_if     CYGPKG_REDBOOT
+        description   "
+            This option lists the target's requirements for a valid Redboot
+            configuration."
+
+        # The backup image is not needed, since ROMRAM is the normal
+        # RedBoot startup type.
+        requires {!CYGPKG_REDBOOT_FLASH || CYGOPT_REDBOOT_FIS_REDBOOT_BACKUP == 0}
+
+        # RedBoot details
+        requires { CYGPKG_REDBOOT_ARM_LINUX_EXEC }
+        requires { CYGHWR_REDBOOT_ARM_LINUX_EXEC_ADDRESS_DEFAULT == 0x20008000 }
+        requires { CYGHWR_REDBOOT_ARM_LINUX_TAGS_ADDRESS == 0x20000100 }
+        
+        define_proc {
+            puts $::cdl_header "#define CYGHWR_REDBOOT_ARM_TRAMPOLINE_ADDRESS 0x20001f00"
+        }
+
+        cdl_option CYGBLD_BUILD_REDBOOT_BIN {
+            display       "Build Redboot ROM binary image"
+            active_if     CYGBLD_BUILD_REDBOOT
+            default_value 1
+            no_define
+            description "This option enables the conversion of the Redboot ELF
+                         image to a binary image suitable for ROM programming."
+
+            make -priority 325 {
+                <PREFIX>/bin/redboot.bin : <PREFIX>/bin/redboot.elf
+                $(OBJCOPY) -O binary $< $@
+            }
+        }
+    }
+
+    cdl_option CYGDAT_IO_NANDFLASH_FS_DEVICE_NAME {
+         display       "Plateform nandflash device name for ROOT file system"
+         flavor        booldata
+         default_value { "\"nandflash/1\""}
+         active_if		CYGPKG_IO_NAND && (CYGHWR_IO_NAND_DEVICE > 0)
+         compile         -library=libextras.a nand_device.c
+         description   "This is a partion of nandflash to host file system"
+     }
+
+    cdl_option CYGDAT_IO_NANDFLASH_EMULATE_NOR {
+		display       "Plateform nandflash device emulator NOR Flash"
+		active_if		CYGPKG_IO_FLASH && CYGPKG_DEVS_FLASH_NAND_EMULATE
+		default_value 1
+		no_define
+		compile         -library=libextras.a emulator_nor_flash.c
+		description   "Read write nandflash as nor flash"
+     }
+
+    cdl_component CYGHWR_MEMORY_LAYOUT {
+        display "Memory layout"
+        flavor data
+        no_define
+        calculated { CYG_HAL_STARTUP == "RAM" ? "arm_arm9_at91sam9260_ram" : "arm_arm9_at91sam9260_romram" }
+
+        cdl_option CYGHWR_MEMORY_LAYOUT_LDI {
+            display "Memory layout linker script fragment"
+            flavor data
+            no_define
+            define -file system.h CYGHWR_MEMORY_LAYOUT_LDI
+            calculated {CYG_HAL_STARTUP == "RAM" ? "<pkgconf/mlt_arm_arm9_at91sam9260_ram.ldi>" :  "<pkgconf/mlt_arm_arm9_at91sam9260_romram.ldi>" }
+        }
+
+        cdl_option CYGHWR_MEMORY_LAYOUT_H {
+            display "Memory layout header file"
+            flavor data
+            no_define
+            define -file system.h CYGHWR_MEMORY_LAYOUT_H
+            calculated { CYG_HAL_STARTUP == "RAM" ? "<pkgconf/mlt_arm_arm9_at91sam9260_ram.h>" :  "<pkgconf/mlt_arm_arm9_at91sam9260_romram.h>" }
+        }
+    }
+
+}

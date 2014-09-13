@@ -1,0 +1,29 @@
+
+#include <cyg/infra/cyg_type.inc>
+#include <cyg/hal/platform_cfg.h>
+#include <cyg/hal/at91sam9260.h>
+#include CYGBLD_HAL_PLATFORM_H
+
+MEMORY
+{
+    ramboot	: ORIGIN = AT91SAM9260_START_ADDR, 		LENGTH = REDBOOT_SIZE
+}
+
+SECTIONS
+{
+	SECTIONS_BEGIN
+	SECTION_rom_vectors (ramboot, AT91SAM9260_START_ADDR, LMA_EQ_VMA)
+	SECTION_fixed_vectors (ramboot, (AT91SAM9260_START_ADDR+0x20), LMA_EQ_VMA)
+	SECTION_RELOCS (ramboot, ALIGN (0x1), LMA_EQ_VMA)
+    SECTION_text (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_fini (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_rodata (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_rodata1 (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_got (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_fixup (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_gcc_except_table (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    SECTION_data (ramboot, ALIGN (0x400), LMA_EQ_VMA)
+    SECTION_bss (ramboot, ALIGN (0x4), LMA_EQ_VMA)
+    CYG_LABEL_DEFN(__heap1) = (AT91SAM9260_SDRAM_PHYS_BASE+REDBOOT_SIZE);
+    SECTIONS_END
+}
