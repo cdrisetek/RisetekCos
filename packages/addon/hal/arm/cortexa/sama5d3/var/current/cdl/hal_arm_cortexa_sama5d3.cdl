@@ -1,27 +1,25 @@
 # ====================================================================
 #
-#      hal_arm_arm9_at91sam9260.cdl
+#      hal_arm_cortexa_sama5d3.cdl
 #
-#      Atmel AT91SRM9260
+#      Atmel AT91SAMA5D3
 #
 # ====================================================================
 
-cdl_package CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR {
-    display       "Atmel AT91SAM9260 HAL"
+cdl_package CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR {
+    display       "Atmel AT91SAMA5D3 HAL"
     parent        CYGPKG_HAL_ARM
-    implements    CYGINT_HAL_ARM_ARCH_ARM9
+    implements    CYGINT_HAL_ARM_ARCH_CORTEXA_SAMA5D3
     hardware
     include_dir   cyg/hal
-    define_header hal_arm_arm9_at91sam9260.h
-    description   "这个软件包定义了在ATMEL AT91SAM9260 CPU上开发的各种开发板的基本抽象"
+
+    description   "ATMEL AT91SAMA5D3 HAL"
 
     compile       at91sam9260_misc.c		\
     			  at91sam9260_hal_io.c		\
     			  timer_pit.c				\
     			  device_misc.c				\
     			  mmu.c
-
-    compile       at91sam9g20_reset.S
 
     implements    CYGINT_HAL_DEBUG_GDB_STUBS
     implements    CYGINT_HAL_DEBUG_GDB_STUBS_BREAK
@@ -32,20 +30,12 @@ cdl_package CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR {
 
     define_proc {
         puts $::cdl_system_header "#define CYGBLD_HAL_TARGET_H   <pkgconf/hal_arm.h>"
-        puts $::cdl_system_header "#define CYGBLD_HAL_VARIANT_H  <pkgconf/hal_arm_arm9_at91sam9260.h>"
-## TODO: FIXME: the CYGBLD_HAL_PLATFORM_H should be placed on each plateform module and replace the BOARD_CONFIG_H define.
-        puts $::cdl_system_header "#define CYGBLD_HAL_PLATFORM_H <pkgconf/board_config.h>"
+        puts $::cdl_system_header "#define CYGBLD_HAL_VARIANT_H  <pkgconf/hal_arm_cortexa_sama5d3.h>"
         puts $::cdl_system_header "#define CYGBLD_HAL_ARM_VAR_IO_H"
         puts $::cdl_system_header "#define CYGBLD_HAL_ARM_VAR_ARCH_H"
 
 		puts $::cdl_system_header "#define USEC_PER_TICK    (CYGNUM_HAL_RTC_NUMERATOR/CYGNUM_HAL_RTC_DENOMINATOR/1000)"
 		puts $::cdl_system_header "#define TICKS_PER_SECOND (1000000000ULL/(CYGNUM_HAL_RTC_NUMERATOR/CYGNUM_HAL_RTC_DENOMINATOR))"
-        
-        puts $::cdl_header "#define HAL_PLATFORM_CPU    \"ARM9\""
-        puts $::cdl_header "#define HAL_PLATFORM_BOARD  \"AT91SAM9260 system\""
-        puts $::cdl_header "#define HAL_PLATFORM_EXTRA  \"\""
-        puts $::cdl_header "#include <pkgconf/system.h>"
-        puts $::cdl_header "#include BOARD_CONFIG_H"
     }
 
     cdl_interface CYGINT_HAL_ARM_AT91SAM9260_SERIAL_DBG_HW {
@@ -66,6 +56,7 @@ cdl_package CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR {
     }
 
     cdl_interface CYGHWR_CPLD_HW {
+		flavor		bool
         display     "Platform has the CPLD on"
         description "equipment CPLD to extends IO port and hardware function."
     }
@@ -181,19 +172,19 @@ cdl_package CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR {
 
     # Both PLLs are in bypass mode on startup.
     cdl_option CYGNUM_HAL_ARM_AT91SAM9260_PLLA_CLOCK {
-        display       "锁相环A时钟频率"
+        display       "PLLA CLOCK"
         flavor        data
         legal_values  48054857 96109714 179712000 18432000 198656000 442368000 497664000 534528000 792576000
         default_value { 198656000 }
-        description   "锁相环A时钟频率提供给处理器"
+        description   "PLLA CLOCK"
     }
 
     cdl_option CYGNUM_HAL_ARM_AT91SAM9260_PLLB_CLOCK {
-        display       "锁相环B时钟频率"
+        display       "PLLB CLOCK"
         flavor        data
         legal_values  48054857
         default_value { 48054857 }
-        description   "锁相环B时钟频率提供给USB"
+        description   "PLLB CLOCK for USB"
     }
 
 

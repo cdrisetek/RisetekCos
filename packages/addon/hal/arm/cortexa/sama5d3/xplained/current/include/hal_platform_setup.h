@@ -18,12 +18,11 @@
 #include <pkgconf/system.h>           // System-wide configuration info
 #include CYGBLD_HAL_VARIANT_H         // Variant specific configuration
 #include CYGBLD_HAL_PLATFORM_H        // Platform specific configuration
+#include CYGBLD_HAL_BOARD_H			// Board resources define.
 #include CYGHWR_MEMORY_LAYOUT_H
-#include BOARD_CONFIG_H
 #include <cyg/hal/hal_mmu.h>          // MMU definitions
-#include <cyg/hal/at91sam9260.h>         // Platform specific hardware definitions
+#include <cyg/hal/at91sam9260.h>      // Platform specific hardware definitions
 #include <cyg/hal/memcfg.h>           // Platform specific memory configuration
-#include <cyg/hal/platform_cfg.h>
 #include <cyg/hal/hal_sdramcfg.h>
 #include <cyg/hal/hal_macro.h>
 
@@ -66,6 +65,7 @@
 		ldr		r2,=AT91C_WDTC_WDDIS
 		str		r2,[r1]
 #endif
+#if	0		   		    	// define raw_led_support!
 		// 首先确定 输出为 低。
 		ldr		r0,= AT91C_PIOB_CODR
 		ldr		r1,=CONTROL_OUT_IO_B
@@ -83,7 +83,7 @@
 		ldr		r1,=CONTROL_OUT_IO_B
 		str		r1, [r0]
  //		RAW_LED_MACRO	0xff	// 让所有的灯都打开
-
+#endif
 		_AT91SAM9_PLL_DBGU_INIT
 		// 现在运行在高时钟下了。
 		_EBI_init

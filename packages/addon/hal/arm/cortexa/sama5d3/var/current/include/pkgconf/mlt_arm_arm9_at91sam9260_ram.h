@@ -3,9 +3,10 @@
 // This is a generated file - do not edit
 
 #ifndef __ASSEMBLER__
+#include <pkgconf/system.h>
+#include CYGBLD_HAL_PLATFORM_H
 #include <cyg/infra/cyg_type.h>
 #include <stddef.h>
-#include <pkgconf/hal_arm_arm9_at91sam9260.h>
 #endif
 
 #define CYGMEM_REGION_ram (AT91SAM9260_SDRAM_PHYS_BASE)
