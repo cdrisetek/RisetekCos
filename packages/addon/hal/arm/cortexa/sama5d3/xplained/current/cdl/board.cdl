@@ -8,15 +8,14 @@
 cdl_package CYGPKG_HAL_XPLAINED {
     display       "XPLAINED Mainboard"
     parent        CYGPKG_HAL_ARM_ARM9
-    requires      CYGPKG_HAL_ARM_ARM9_AT91SAM9260_VAR
+    requires      CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR
 
     include_dir   cyg/hal
 
     hardware
 
-    implements	CYGPKG_HAL_ARM_ARM9_AT91SAM9260_LED
-    implements	CYGINT_HAL_ARM_AT91SAM9260_SERIAL_DBG_HW
-    implements	CYGINT_HAL_ARM_AT91SAM9260_SYS_INTERRUPT
+    implements	CYGINT_HAL_SERIAL_DBG_HW
+    implements	CYGINT_HAL_SYS_INTERRUPT
     implements  CYGINT_DEVS_TELCOM_PHY_REQUIRED
     implements	CYGHWR_DEV_USBMODEM_POWER_MANAGE_REQUIRED
 	implements	CYGPKG_HAL_USB_MODEM_CONNECTOR
@@ -26,7 +25,7 @@ cdl_package CYGPKG_HAL_XPLAINED {
     define_proc {
         puts $::cdl_system_header "#define CYGBLD_HAL_PLATFORM_H <pkgconf/hal_xplained.h>"
         puts $::cdl_system_header "#define CYGBLD_HAL_BOARD_H	<cyg/hal/platform_cfg.h>"
-        puts $::cdl_system_header "#define CYGPKG_HAL_ARM_ARM9_AT91SAM9260_PORT_INIT"
+        puts $::cdl_system_header "#define CYGPKG_HAL_PORT_INIT"
 		puts $::cdl_system_header "#define HAL_PLATFORM_MACHINE_TYPE 0x44b"
     }
 

@@ -60,7 +60,7 @@
 
 		// Çå³ýWATCHDOG
 		// DISABLE WATCHDOG
-#ifdef CYGNUM_HAL_ARM_AT91SAM9260_DISABLE_WATCHDOG
+#ifdef CYGNUM_HAL_DISABLE_WATCHDOG
 		ldr		r1,=AT91C_WDTC_WDMR
 		ldr		r2,=AT91C_WDTC_WDDIS
 		str		r2,[r1]
@@ -95,11 +95,11 @@
         ldr     r2,=AT91SAM9260_SDRAM_PHYS_BASE
         orr     sp,r1,r2
 
-#ifdef	CYGPKG_HAL_ARM_ARM9_AT91SAM9260_BOOT_SPI
+#ifdef	CYGPKG_HAL_BOOT_SPI
 		LOAD_DATAFLASH
-#else	// CYGPKG_HAL_ARM_ARM9_AT91SAM9260_BOOT_SPI
+#else	// CYGPKG_HAL_BOOT_SPI
 		LOAD_NAND
-#endif // CYGPKG_HAL_ARM_ARM9_AT91SAM9260_BOOT_SPI
+#endif // CYGPKG_HAL_BOOT_SPI
 
         ldr     r2,=10f
         mov     pc,r2    /* Change address spaces */

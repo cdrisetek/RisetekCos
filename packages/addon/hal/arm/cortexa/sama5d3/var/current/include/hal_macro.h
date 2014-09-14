@@ -222,7 +222,7 @@ __EBI_init__:
         _turnon_mmu
 .endm
 
-#ifdef	CYGOPT_HAL_ARM_AT91SAM9_PLL_DEFAULT
+#ifdef	CYGOPT_HAL_PLL_DEFAULT
 // AT91SAM9G20
 #define DEFAULT_AT91SAM9G20_ICPLLA_VALUE		0
 #define DEFAULT_AT91SAM9G20_PMC_MCKR_VALUE		( (1 << 12 ) | ((0x6 >> 1) << 8 )| AT91C_PMC_CSS_PLLA_CLK )
@@ -238,7 +238,7 @@ __EBI_init__:
 
 .macro	_AT91SAM9_PLL_DBGU_INIT
 /*TODO: 在新的at91sam7初始化程序中，增加了检测CPU时钟是否在高频率下运行的部分。不知道在AT91SAM9下 是不是存在同样的问题？*/
-#ifdef	CYGOPT_HAL_ARM_AT91SAM9_PLL_DEFAULT
+#ifdef	CYGOPT_HAL_PLL_DEFAULT
 		//We read ID from CPU, and store to R11 for CPU MODEL
 		ldr		r0,=AT91C_DBGU_CIDR
 		ldr		r0,[r0]
@@ -261,7 +261,7 @@ __EBI_init__:
 #endif
 		b	CPUMODEL
 		.align 4
-#ifndef	CYGOPT_HAL_ARM_AT91SAM9_PLL_DEFAULT
+#ifndef	CYGOPT_HAL_PLL_DEFAULT
 		plla_value:				.word	AT91C_PLLA_VALUE
 		pmc_mckr_value:			.word	PMC_MCKR_VALUE
 		icplla_value:			.word	ICPLLA_VALUE
@@ -321,7 +321,7 @@ __EBI_init__:
 		ldr	r1,	=AT91C_DBGU_BRGR
 		ldr	r2, DBGU_BRGR_VALUE
 		str	r2,[r1]
-#ifdef	CYGPKG_HAL_ARM_ARM9_AT91SAM9260_BOOT_SPI
+#ifdef	CYGPKG_HAL_BOOT_SPI
 		ldr		r10,=AT91C_DBGU_CIDR
 		ldr		r10,[r10]
 		SHOW_REG_CHARS
