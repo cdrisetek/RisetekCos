@@ -224,9 +224,6 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 
 
 
-#define ID_FIQ    ( 0) /**< \brief Advanced Interrupt Controller (FIQ) */
-#define ID_SYS    ( 1) /**< \brief System Controller Interrupt (SYS) */
-#define ID_DBGU   ( 2) /**< \brief Debug Unit Interrupt (DBGU) */
 #define ID_PIT    ( 3) /**< \brief Periodic Interval Timer Interrupt (PIT) */
 #define ID_WDT    ( 4) /**< \brief Watchdog timer Interrupt (WDT) */
 #define ID_SMC    ( 5) /**< \brief Multi-bit ECC Interrupt (SMC) */
@@ -236,6 +233,7 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 #define ID_PIOD   ( 9) /**< \brief Parallel I/O Controller D (PIOD) */
 #define ID_PIOE   (10) /**< \brief Parallel I/O Controller E (PIOE) */
 #define ID_SMD    (11) /**< \brief SMD Soft Modem (SMD) */
+
 #define ID_USART0 (12) /**< \brief USART 0 (USART0) */
 #define ID_USART1 (13) /**< \brief USART 1 (USART1) */
 #define ID_USART2 (14) /**< \brief USART 2 (USART2) */
@@ -285,15 +283,15 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 #define AT91_PMC_PCER_FIQ           (1 << 0) // Advanced Interrupt Controller FIQ
 #define AT91_PMC_PCER_SYSC          (1 << 1) // System Controller Interrupt
 #define AT91_PMC_PCER_DBGU          (1 << 2) // Debug Unit Interrupt
-//#define AT91_PMC_PCER_PIOA          (1 << 2) // Parallel IO Controller
-#define AT91_PMC_PCER_PIOB          (1 << 3) // Parallel IO Controller
-#define AT91_PMC_PCER_PIOC          (1 << 4) // Parallel IO Controller
-#define AT91_PMC_PCER_PIOD          (1 << 5) // Parallel IO Controller
-#define AT91_PMC_PCER_TRNG          (1 << 6) // True Random Generator
-#define AT91_PMC_PCER_US0           (1 << 7) // USART 0
-#define AT91_PMC_PCER_US1           (1 << 8) // USART 1
-#define AT91_PMC_PCER_US2           (1 << 9) // USART 2
-#define AT91_PMC_PCER_US3           (1 <<10) // USART 3
+
+#define AT91_PMC_PCER_PIOA          (1 << 6) // Parallel IO Controller
+#define AT91_PMC_PCER_PIOB          (1 << 7) // Parallel IO Controller
+#define AT91_PMC_PCER_PIOC          (1 << 8) // Parallel IO Controller
+#define AT91_PMC_PCER_PIOD          (1 << 9) // Parallel IO Controller
+#define AT91_PMC_PCER_US0           (1 << 12) // USART 0
+#define AT91_PMC_PCER_US1           (1 << 13) // USART 1
+#define AT91_PMC_PCER_US2           (1 << 14) // USART 2
+#define AT91_PMC_PCER_US3           (1 << 15) // USART 3
 #define AT91_PMC_PCER_HSMCI0        (1 <<11) // High Speed Multimedia Card Interface 0
 #define AT91_PMC_PCER_TWI           (1 <<12) // Two-Wire Interface 0
 #define AT91_PMC_PCER_TWI1          (1 <<13) // Two-Wire Interface 1
@@ -318,6 +316,7 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 #define AT91_PMC_PCER_UDHS          (1 <<27) // USB Device High Speed
 #define AT91_PMC_PCER_HSMCI1        (1 <<29) // High Speed Multimedia Card Interface 1
 #define AT91_PMC_PCER_IRQ0          (1 <<31) // Advanced Interrupt Controller IRQ0
+#define AT91_PMC_PCER_TRNG          (1 << 45) // True Random Generator
 
 #define AT91_PMC_MOR                0x20     // Main Oscillator Register
 #define AT91_PMC_MOR_MOSCEN         (1 << 0) // Main Oscillator Enable
@@ -339,13 +338,16 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 #define AT91_PMC_MCKR_MAIN_CLK     (1 << 0) // Main clock selected
 #define AT91_PMC_MCKR_PLLA_CLK     (2 << 0) // PLLA clock selected
 #define AT91_PMC_MCKR_UPLL_CLK     (3 << 0) // UPLL clock selected /* T.B.D New in g45 */
-#define AT91_PMC_MCKR_PRES_CLK     (0 << 2) // divide by 1
-#define AT91_PMC_MCKR_PRES_CLK_2   (1 << 2) // divide by 2
-#define AT91_PMC_MCKR_PRES_CLK_4   (2 << 2) // divide by 4
-#define AT91_PMC_MCKR_PRES_CLK_8   (3 << 2) // divide by 8
-#define AT91_PMC_MCKR_PRES_CLK_16  (4 << 2) // divide by 16
-#define AT91_PMC_MCKR_PRES_CLK_32  (5 << 2) // divide by 32
-#define AT91_PMC_MCKR_PRES_CLK_64  (6 << 2) // divide by 64
+#define AT91_PMC_MCKR_PRES_CLK     (0 << 4) // divide by 1
+#define AT91_PMC_MCKR_PRES_CLK_2   (1 << 4) // divide by 2
+#define AT91_PMC_MCKR_PRES_CLK_4   (2 << 4) // divide by 4
+#define AT91_PMC_MCKR_PRES_CLK_8   (3 << 4) // divide by 8
+#define AT91_PMC_MCKR_PRES_CLK_16  (4 << 4) // divide by 16
+#define AT91_PMC_MCKR_PRES_CLK_32  (5 << 4) // divide by 32
+#define AT91_PMC_MCKR_PRES_CLK_64  (6 << 4) // divide by 64
+
+#define AT91_PMC_MCKR_MDIV_PCK_DIV4  (2 << 8) // divide by 4
+
 
 #define AT91_PMC_PCKR0  0x40  // Programmable Clock Register 0
 #define AT91_PMC_PCKR1  0x44  // Programmable Clock Register 1

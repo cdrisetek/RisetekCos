@@ -196,19 +196,17 @@ __EBI_init__:
         _turnon_mmu
 .endm
 
-#ifdef	CYGOPT_HAL_PLL_DEFAULT
-// AT91SAM9G20
-#define DEFAULT_AT91SAM9G20_ICPLLA_VALUE		0
-#define DEFAULT_AT91SAM9G20_PMC_MCKR_VALUE		( (1 << 12 ) | ((0x6 >> 1) << 8 )| AT91C_PMC_CSS_PLLA_CLK )
-#define	DEFAULT_AT91SAM9G20_PLLA_VALUE			( ( 0x2 << 28 ) | (0x2a << 16) | (0x0 << 14) | (0x3f << 8) | 0x1 )		// Fin=18.432MHz 786,432000 MHz for PLLA
-#define DEFAULT_AT91SAM9G20_PMC_MCK				( 786432000 / 6)
+// xplained
+/* PCK = 528MHz, MCK = 132MHz */
+#define PLLA_MULA		43
+#define BOARD_PCK		((unsigned long)(BOARD_MAINOSC * (PLLA_MULA + 1)))
+#define BOARD_MCK		((unsigned long)((BOARD_MAINOSC * (PLLA_MULA + 1)) / 4))
 
-// AT91SAM9260
-#define DEFAULT_AT91SAM9260_ICPLLA_VALUE		1
-#define DEFAULT_AT91SAM9260_PMC_MCKR_VALUE		( (0 << 12 ) | ((0x2 >> 1) << 8 )| AT91C_PMC_CSS_PLLA_CLK )
-#define	DEFAULT_AT91SAM9260_PLLA_VALUE			( ( 0x2 << 28 ) | (0x60 << 16) | (0x2 << 14) | (0x3f << 8) | 0x9 )		// Fin=18.432MHz 198656000 Hz for PLLA
-#define DEFAULT_AT91SAM9260_PMC_MCK				( 198656000 / 2)
-#endif
+// SAMA5D3
+#define DEFAULT_MAINOSC				12000000
+#define DEFAULT_PMC_PCK				(DEFAULT_MAINOSC * (PLLA_MULA + 1))					// 528000000 Hz
+#define DEFAULT_PMC_MCK				(DEFAULT_PMC_PCK / 4))								// 132000000 Hz
+
 
 .macro	_AT91SAM9_PLL_DBGU_INIT
 		b	CPUMODEL
@@ -219,40 +217,127 @@ __EBI_init__:
 		pmc_mck:				.word	PMC_MCK
 		DBGU_BRGR_VALUE:		.word	((PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
 	CPUMODEL:
-	// end of checkout CPU Model
-		ldr     r0,=AT91_PMC
-		ldr		r1,[r0,#AT91_PMC_PLLRA]
-		ldr		r2,plla_value
-		cmp		r1, r2
-		bne		setPLL
 	setPLL:
 	/* PMC Clock Generator Main Oscillator Register,The Main Oscillator is enabled. */
-		ldr		r1,icplla_value		// NOTE: TODO: Page 266, IPLL_PLLA should be 3
-		str		r1,[r0,#AT91_PMC_PLLICPR]
-		ldr		r1,plla_value
+		ldr		r1,=( (1 << 29) | (PLLA_MULA << 18) | AT91_PMC_PLLR_OUT_0 | (0x3F << 8) | 0x1 )	// Fin=12.000MHz 528.000 MHz for PLLA
 		str		r1,[r0,#AT91_PMC_PLLRA]
 	checkPLLA:
 		ldr		r1,[r0,#AT91_PMC_SR]
 		ands	r1,r1,#AT91_PMC_SR_LOCKA
 		beq		checkPLLA
-		/* 写入PMC Master Clock Register值 */
-		ldr		r1,pmc_mckr_value
+
+		ldr		r1,=(0x3 << 8)		// NOTE: TODO: Page 266, IPLL_PLLA should be 3
+		str		r1,[r0,#AT91_PMC_PLLICPR]
+
+		/* Switch PCK/MCK on Main clock output */
+		/*
+		 * Program the PRES field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		*/
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x7 << 4)
 		str		r1,[r0,#AT91_PMC_MCKR]
 	checkMCKRDY2:
 		ldr		r1,[r0,#AT91_PMC_SR]
 		ands	r1,r1,#AT91_PMC_SR_MCKRDY
 		beq		checkMCKRDY2
+
+		/*
+		 * Program the MDIV field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		 */
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x3 << 8)
+		orr		r1, r1, #AT91_PMC_MCKR_MDIV_PCK_DIV4
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY3:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY3
+
+		/*
+		 * Program the PLLADIV2 field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		 */
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x1 << 12)
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY4:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY4
+
+		/*
+		 * Program the CSS field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		 */
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x7 << 0)
+		orr		r1, r1, #AT91_PMC_MCKR_MAIN_CLK
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY5:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY5
+
+		/* Switch PCK/MCK on PLLA output */
+		/*
+		 * Program the PRES field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		*/
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x7 << 4)
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY6:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY6
+
+		/*
+		 * Program the MDIV field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		 */
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x3 << 8)
+		orr		r1, r1, #AT91_PMC_MCKR_MDIV_PCK_DIV4
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY7:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY7
+
+		/*
+		 * Program the PLLADIV2 field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		 */
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x1 << 12)
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY8:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY8
+
+		/*
+		 * Program the CSS field in the PMC_MCKR register,
+		 * wait for MCKRDY bit to be set in the PMC_SR register
+		 */
+		ldr		r1,[r0,#AT91_PMC_MCKR]
+		bic		r1, r1, #(0x7 << 0)
+		orr		r1, r1, #AT91_PMC_MCKR_PLLA_CLK
+		str		r1,[r0,#AT91_PMC_MCKR]
+	checkMCKRDY9:
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
+		beq		checkMCKRDY9
+
 		/*时钟：*/
 	PLLReady:
 		ldr		r1,=~(AT91_PMC_SCER_PCK)
-		str		r1,[r0,#AT91_PMC_SCDR]		/* 关闭除了处理器外的其它时钟。包括USB时钟和可编程外部时钟。 */
-		ldr		r1,=(AT91_PMC_SCER_PCK | AT91_PMC_SCER_DDRCK)
-		str		r1,[r0,#AT91_PMC_SCER]		/* 处理器和DDR时钟打开。 */
+		str		r1,[r0,#AT91_PMC_SCDR]
+		ldr		r1,=(AT91_PMC_SCER_PCK | AT91_PMC_SCER_DDRCK | AT91_PMC_PCER_PIOB | AT91_PMC_PCER_DBGU)
+		str		r1,[r0,#AT91_PMC_SCER]
 	// Init DBGU
-		// Should open perical clock DBGU
-		ldr		r1,=(AT91_PMC_PCER_DBGU)
-		str		r1,[r0,#AT91_PMC_PCER]		/* OPEN CLOCK FOR DBGU */
-
 		ldr	r1,	=AT91_PIOB
 		// Control B
 		ldr r2, =( (1 << (AT91_DBG_DRXD & 0xFF)) | ( 1 << (AT91_DBG_DTXD & 0xFF)))
@@ -271,7 +356,7 @@ __EBI_init__:
 		str	r2,[r1, #AT91_DBG_CR]
 		ldr	r2, =(AT91_DBG_MR_CHMODE_NORMAL|AT91_DBG_MR_PAR_NONE)
 		str	r2,[r1, #AT91_DBG_MR]
-		ldr	r2, =((PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
+		ldr	r2, =((DEFAULT_PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
 		str	r2,[r1, #AT91_DBG_BRGR]
 #ifdef	CYGPKG_HAL_BOOT_SPI
 		ldr		r10,[r1, #AT91_DBG_C1R]
