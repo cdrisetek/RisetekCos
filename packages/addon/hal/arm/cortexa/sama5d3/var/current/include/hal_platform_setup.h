@@ -21,11 +21,9 @@
 #include CYGBLD_HAL_BOARD_H			// Board resources define.
 #include CYGHWR_MEMORY_LAYOUT_H
 #include <cyg/hal/hal_mmu.h>          // MMU definitions
-#include <cyg/hal/at91sam9260.h>      // Platform specific hardware definitions
 #include <cyg/hal/memcfg.h>           // Platform specific memory configuration
 #include <cyg/hal/hal_sdramcfg.h>
 #include <cyg/hal/hal_macro.h>
-
 
 // Macro to initialise the EBI interface
 #ifdef CYG_HAL_STARTUP_ROMRAM
@@ -42,28 +40,28 @@
 		orr r1,r1,#0x13
 		msr cpsr,r1
 // Eanble PIT, It is useful for a random number general
-		ldr		r1,=AT91C_PITC_PIMR
-		ldr		r0, =(AT91C_PITC_PITEN | 0xfffff)
-		str		r0,[r1]
+		ldr		r1,=AT91_PITC
+		ldr		r0, =(AT91_PITC_PIMR_PITEN | 0xfffff)
+		str		r0,[r1, #AT91_PITC_PIMR]
 
    		 _disable_cache
 
 		// 允许外部复位信号
-		ldr	r1, =AT91C_RSTC_RMR
-		ldr	r2, =( AT91C_RSTC_KEY | AT91C_RSTC_ERSTL | AT91C_RSTC_URSTEN )
-		str	r2,[r1]
+		ldr	r1, =AT91_RST
+		ldr	r2, =( AT91_RST_RMR_KEY | AT91_RST_RMR_URSTEN )
+		str	r2,[r1, #AT91_RST_RMR]
 
 		// 禁止中断
-		ldr		r1,=AT91C_AIC_IDCR
+		ldr		r1,=AT91_AIC
 		ldr		r2,=0xffffffff
-		str		r2,[r1]
+		str		r2,[r1, #AT91_AIC_IDCR]
 
 		// 清除WATCHDOG
 		// DISABLE WATCHDOG
 #ifdef CYGNUM_HAL_DISABLE_WATCHDOG
-		ldr		r1,=AT91C_WDTC_WDMR
-		ldr		r2,=AT91C_WDTC_WDDIS
-		str		r2,[r1]
+		ldr		r1,=AT91_WDTC
+		ldr		r2,=AT91_WDTC_WDMR_DIS
+		str		r2,[r1, #AT91_WDTC_WDMR]
 #endif
 #if	0		   		    	// define raw_led_support!
 		// 首先确定 输出为 低。

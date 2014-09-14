@@ -4,39 +4,15 @@
 #include <cyg/hal/helper_spi_boot.h>
 #include <cyg/hal/helper_sdram_init.h>
 
-#define BOOT_SHOW_REG_CHARS			SHOW_REG_CHARS
-#define BOOT_SHOW_DBGU_CHAR			SHOW_DBGU_CHAR
-
 #define CYGNUM_HAL_ARM_VECTOR_0x14 4096
-#if 0
-// This PIT function is for random number generate.
-.macro _PIT_init
-	ldr		r0,=0x00300000
-	ldr		r1,=0x00300004
-	str		r1,[r0]
-	ldr		r1,=AT91C_PITC_PIMR
-	ldr		r0, =(AT91C_PITC_PITEN | 0xfffff)
-	str		r0,[r1]
-.endm
 
-.macro _PIT_check
-	ldr		r9,=0x00300000
-	ldr		r10,[r9]
-	ldr		r9, =AT91C_PITC_PIVR
-	ldr		r11,[r9]
-	strb	r11,[r10]
-	add		r10,#1
-	ldr		r9,=0x00300000
-	str		r10,[r9]
-.endm
-#endif
-// Show HEX Value in R10 ( R10 R11 R12 used)
-.macro SHOW_REG_CHARS
+// Show HEX Value in R10 (R9 R10 R11 R12 used)
+.macro BOOT_SHOW_REG_CHARS
 		ldr	r9,=28
+		ldr	r11, =AT91_DBG
 2:
-		ldr	r11, =AT91C_DBGU_CSR
-		ldr	r11,[r11]
-		ands	r11,r11,#AT91C_US_TXRDY
+		ldr	r12,[r11, #AT91_DBG_CSR]
+		ands	r12,r12,#AT91_DBG_CSR_TXRDY
 		beq	2b
 		mov r12,r10, LSR r9
 		and r12,r12,#0xf
@@ -45,23 +21,21 @@
 		add r12,#7
 3:
 		add	r12,#48
-		ldr	r11, =AT91C_DBGU_THR
-		strb r12,[r11]
+		str r12,[r11, #AT91_DBG_THR]
 		subs r9,r9,#4
 		bcs 2b
 .endm
 
 // TODO: FIXME: when we select DBGU as console, so following is ready,
 // but when we select another serial port as console, what to do?
-.macro SHOW_DBGU_CHAR x
+.macro BOOT_SHOW_DBGU_CHAR x
+		ldr	r11, =AT91_DBG
 1:
-		ldr	r11, =AT91C_DBGU_CSR
-		ldr	r11,[r11]
-		ands	r11,r11,#AT91C_US_TXRDY
+		ldr	r12,[r11, #AT91_DBG_CSR]
+		ands	r12,r12,#AT91_DBG_CSR_TXRDY
 		beq	1b
-		ldr	r11, =AT91C_DBGU_THR
 		ldr	r12, =\x
-		str	r12,[r11]
+		str	r12,[r11, #AT91_DBG_THR]
 .endm
 
 .macro LDELAY
@@ -71,17 +45,16 @@
 	bne	1b
 .endm
 
+// SPI0
 .macro SPI_CHAR x
-	ldr r1,=AT91C_SPI0_TDR
+	ldr r1,=AT91_SPI
 	ldr	r2,=\x
-	str	r2,[r1]
+	str	r2,[r1, #AT91_SPI_TDR]
 1:
-	ldr r1,=AT91C_SPI0_SR
-	ldr	r2,[r1]
-	ands r2, r2, #AT91C_SPI_RDRF
+	ldr	r2,[r1, #AT91_SPI_SR]
+	ands r2, r2, #AT91_SPI_SR_RDRF
 	beq	1b
-	ldr r1,=AT91C_SPI0_RDR
-	ldr	r2,[r1]
+	ldr	r2,[r1, #AT91_SPI_RDR]
 .endm
 
 
@@ -205,8 +178,9 @@ __EBI_init__:
 	mrc		MMU_CP,0,r1,MMU_Control,c0,0
 	ldr		r0,=(MMU_Control_Init | MMU_Control_M | MMU_Control_A | MMU_Control_I | MMU_Control_C)
 	orr		r1,r1,r0
-	ldr		r0,=(MMU_Control_S & MMU_Control_R)
-	bic		r1,r1,r0
+//	ldr		r0,=(MMU_Control_S & MMU_Control_R)
+//	bic		r1,r1,r0
+	bic		r1,r1,#(MMU_Control_S & MMU_Control_R)
 	mcr		MMU_CP,0,r1,MMU_Control,c0,0
     nop
 	nop
@@ -237,95 +211,72 @@ __EBI_init__:
 #endif
 
 .macro	_AT91SAM9_PLL_DBGU_INIT
-/*TODO: 在新的at91sam7初始化程序中，增加了检测CPU时钟是否在高频率下运行的部分。不知道在AT91SAM9下 是不是存在同样的问题？*/
-#ifdef	CYGOPT_HAL_PLL_DEFAULT
-		//We read ID from CPU, and store to R11 for CPU MODEL
-		ldr		r0,=AT91C_DBGU_CIDR
-		ldr		r0,[r0]
-		ldr		r1,=0x019905a1		// AT91SAM9G20 ID
-		cmp		r0,r1
-		bne		CPUMODEL
-		ldr		r0,=DEFAULT_AT91SAM9G20_PMC_MCKR_VALUE
-		str		r0,pmc_mckr_value
-		ldr		r0,=DEFAULT_AT91SAM9G20_PLLA_VALUE
-		str		r0,plla_value
-		ldr		r0,=DEFAULT_AT91SAM9G20_ICPLLA_VALUE
-		str		r0,icplla_value
-		ldr		r0,=DEFAULT_AT91SAM9G20_PMC_MCK
-		str		r0,pmc_mck
-		ldr		r0,=((DEFAULT_AT91SAM9G20_PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
-		str		r0,DBGU_BRGR_VALUE
-		ldr		r0,=( 156 * (DEFAULT_AT91SAM9G20_PMC_MCK / 1000000 ) / 10 )
-		str		r0,sdramc_tr_value
-		// r11 for AT91SAM9G20  PLLA VALUE
-#endif
 		b	CPUMODEL
 		.align 4
-#ifndef	CYGOPT_HAL_PLL_DEFAULT
 		plla_value:				.word	AT91C_PLLA_VALUE
 		pmc_mckr_value:			.word	PMC_MCKR_VALUE
 		icplla_value:			.word	ICPLLA_VALUE
 		pmc_mck:				.word	PMC_MCK
 		DBGU_BRGR_VALUE:		.word	((PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
-		sdramc_tr_value:		.word	( 156 * (PMC_MCK / 1000000 ) / 10 )
-#else
-		plla_value:				.word	DEFAULT_AT91SAM9260_PLLA_VALUE
-		pmc_mckr_value:			.word	DEFAULT_AT91SAM9260_PMC_MCKR_VALUE
-		icplla_value:			.word	DEFAULT_AT91SAM9260_ICPLLA_VALUE
-		pmc_mck:				.word	DEFAULT_AT91SAM9260_PMC_MCK
-		DBGU_BRGR_VALUE:		.word	((DEFAULT_AT91SAM9260_PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
-		sdramc_tr_value:		.word	( 156 * (DEFAULT_AT91SAM9260_PMC_MCK / 1000000 ) / 10 )
-#endif
 	CPUMODEL:
 	// end of checkout CPU Model
-		ldr     r0,=AT91C_BASE_PMC
-		ldr		r1,[r0,#PMC_PLLAR]
+		ldr     r0,=AT91_PMC
+		ldr		r1,[r0,#AT91_PMC_PLLRA]
 		ldr		r2,plla_value
 		cmp		r1, r2
 		bne		setPLL
 	setPLL:
 	/* PMC Clock Generator Main Oscillator Register,The Main Oscillator is enabled. */
-		ldr		r1,icplla_value
-		str		r1,[r0,#PMC_PLLICPR]
+		ldr		r1,icplla_value		// NOTE: TODO: Page 266, IPLL_PLLA should be 3
+		str		r1,[r0,#AT91_PMC_PLLICPR]
 		ldr		r1,plla_value
-		str		r1,[r0,#PMC_PLLAR]
+		str		r1,[r0,#AT91_PMC_PLLRA]
 	checkPLLA:
-		ldr		r1,[r0,#PMC_SR]
-		ands	r1,r1,#AT91C_PMC_LOCKA
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_LOCKA
 		beq		checkPLLA
 		/* 写入PMC Master Clock Register值 */
 		ldr		r1,pmc_mckr_value
-		str		r1,[r0,#PMC_MCKR]
+		str		r1,[r0,#AT91_PMC_MCKR]
 	checkMCKRDY2:
-		ldr		r1,[r0,#PMC_SR]
-		ands	r1,r1,#AT91C_PMC_MCKRDY
+		ldr		r1,[r0,#AT91_PMC_SR]
+		ands	r1,r1,#AT91_PMC_SR_MCKRDY
 		beq		checkMCKRDY2
 		/*时钟：*/
 	PLLReady:
-		ldr		r1,=0x1
-		str		r1,[r0,#PMC_SCER]		/* 处理器时钟打开。 */
-		ldr		r1,=0xfffffffe
-		str		r1,[r0,#PMC_SCDR]		/* 关闭除了处理器时钟外的其它时钟。包括USB时钟和可编程外部时钟。 */
+		ldr		r1,=~(AT91_PMC_SCER_PCK)
+		str		r1,[r0,#AT91_PMC_SCDR]		/* 关闭除了处理器外的其它时钟。包括USB时钟和可编程外部时钟。 */
+		ldr		r1,=(AT91_PMC_SCER_PCK | AT91_PMC_SCER_DDRCK)
+		str		r1,[r0,#AT91_PMC_SCER]		/* 处理器和DDR时钟打开。 */
 	// Init DBGU
-		ldr	r1,	=AT91C_PIOB_ASR
-		ldr	r2,	=(AT91C_PB14_DRXD | AT91C_PB15_DTXD)
-		str	r2,	[r1]
+		// Should open perical clock DBGU
+		ldr		r1,=(AT91_PMC_PCER_DBGU)
+		str		r1,[r0,#AT91_PMC_PCER]		/* OPEN CLOCK FOR DBGU */
+
+		ldr	r1,	=AT91_PIOB
+		// Control B
+		ldr r2, =( (1 << (AT91_DBG_DRXD & 0xFF)) | ( 1 << (AT91_DBG_DTXD & 0xFF)))
+		// Peripheral A
+		ldr r3, [r1, #AT91_PIO_ABCDSR1]
+		bic r3, r3, r2
+		str	r3,	[r1, #AT91_PIO_ABCDSR1]
+		ldr r3, [r1, #AT91_PIO_ABCDSR2]
+ 		bic r3, r3, r2
+ 		str	r3,	[r1, #AT91_PIO_ABCDSR2]
 		ldr	r1,	=AT91C_PIOB_PDR
-		str	r2,	[r1]
-		ldr	r1, =AT91C_DBGU_CR
-		ldr	r2, =( AT91C_US_RSTSTA | AT91C_US_TXEN | AT91C_US_RXEN )
-		str	r2,[r1]
-		ldr	r1, =AT91C_DBGU_MR
-		ldr	r2, =( AT91C_US_CHMODE_NORMAL | AT91C_US_PAR_NONE )
-		str	r2,[r1]
-		ldr	r1,	=AT91C_DBGU_BRGR
-		ldr	r2, DBGU_BRGR_VALUE
-		str	r2,[r1]
+		str	r2,	[r1, #AT91_PIO_PDR]
+
+		ldr	r1, =AT91_DBG	//AT91C_DBGU_CR
+		ldr	r2, =(AT91_DBG_CR_RSTSTA|AT91_DBG_CR_TXEN|AT91_DBG_CR_RXEN)
+		str	r2,[r1, #AT91_DBG_CR]
+		ldr	r2, =(AT91_DBG_MR_CHMODE_NORMAL|AT91_DBG_MR_PAR_NONE)
+		str	r2,[r1, #AT91_DBG_MR]
+		ldr	r2, =((PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
+		str	r2,[r1, #AT91_DBG_BRGR]
 #ifdef	CYGPKG_HAL_BOOT_SPI
-		ldr		r10,=AT91C_DBGU_CIDR
-		ldr		r10,[r10]
+		ldr		r10,[r1, #AT91_DBG_C1R]
 		SHOW_REG_CHARS
-		SHOW_DBGU_CHAR ' '
+		BOOT_SHOW_DBGU_CHAR ' '
 #endif
 .endm
 #endif	// CYGONCE_HAL_MACRO_H

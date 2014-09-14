@@ -60,21 +60,16 @@
 #include <cyg/infra/cyg_type.h>
 #include <pkgconf/hal_arm_at91sam9.h>
 
-#if defined (CYGHWR_HAL_ARM_AT91SAM9)
 // For SAM9 cache handling
 //-----------------------------------------------------------------------------
 // Cache dimensions
 
 #define HAL_ICACHE_SIZE                 0x8000
-//#define HAL_ICACHE_SIZE 0
-
 #define HAL_ICACHE_LINE_SIZE            32
 #define HAL_ICACHE_WAYS                 4
 #define HAL_ICACHE_SETS (HAL_ICACHE_SIZE/(HAL_ICACHE_LINE_SIZE*HAL_ICACHE_WAYS))
 
 #define HAL_DCACHE_SIZE                 0x8000
-//#define HAL_DCACHE_SIZE                 0
-
 #define HAL_DCACHE_LINE_SIZE            32
 #define HAL_DCACHE_WAYS                 4
 #define HAL_DCACHE_SETS (HAL_DCACHE_SIZE/(HAL_DCACHE_LINE_SIZE*HAL_DCACHE_WAYS))
@@ -89,8 +84,6 @@
 
 //-----------------------------------------------------------------------------
 // Global control of Instruction cache
-
-#if HAL_ICACHE_SIZE != 0
 
 // FIXME: disable/enable instruction streaming?
 
@@ -170,15 +163,6 @@ CYG_MACRO_START                                                 \
     HAL_ICACHE_INVALIDATE_ALL(); /* forget all we know */       \
 CYG_MACRO_END
 
-#else
-
-#define HAL_ICACHE_ENABLE()
-#define HAL_ICACHE_DISABLE()
-#define HAL_ICACHE_IS_ENABLED(_state_) ((_state_) = 0)
-#define HAL_ICACHE_INVALIDATE_ALL()
-#define HAL_ICACHE_SYNC()
-
-#endif
 
 // Set the instruction cache refill burst size
 //#define HAL_ICACHE_BURST_SIZE(_size_)
@@ -201,8 +185,6 @@ CYG_MACRO_END
 
 //-----------------------------------------------------------------------------
 // Global control of data cache
-
-#if HAL_DCACHE_SIZE != 0
 
 // Enable the data cache
 #define HAL_DCACHE_ENABLE()                                             \
@@ -338,15 +320,6 @@ CYG_MACRO_END
 # error "Don't know how to sync Dcache"
 #endif
 
-#else
-
-#define HAL_DCACHE_ENABLE()
-#define HAL_DCACHE_DISABLE()
-#define HAL_DCACHE_IS_ENABLED(_state_) ((_state_) = 0)
-#define HAL_DCACHE_INVALIDATE_ALL()
-#define HAL_DCACHE_SYNC()
-
-#endif
 
 
 // Set the data cache refill burst size
@@ -465,142 +438,6 @@ CYG_MACRO_END
 //extern cyg_uint32 hal_virt_to_phys_address(cyg_uint32 phys);
 //#define HAL_VIRT_TO_PHYS_ADDRESS(_va, _pa) _pa = hal_virt_to_phys_address(_va)
 //#endif
-
-#elif defined (CYGHWR_HAL_ARM_AT91SAM7)
-
-// For SAM7 cache handling (no cache)
-
-//-----------------------------------------------------------------------------
-// Cache dimensions
-
-// Data cache
-//#define HAL_DCACHE_SIZE                 0    // Size of data cache in bytes
-//#define HAL_DCACHE_LINE_SIZE            0    // Size of a data cache line
-//#define HAL_DCACHE_WAYS                 0    // Associativity of the cache
-
-// Instruction cache
-//#define HAL_ICACHE_SIZE                 0    // Size of cache in bytes
-//#define HAL_ICACHE_LINE_SIZE            0    // Size of a cache line
-//#define HAL_ICACHE_WAYS                 0    // Associativity of the cache
-
-//#define HAL_DCACHE_SETS (HAL_DCACHE_SIZE/(HAL_DCACHE_LINE_SIZE*HAL_DCACHE_WAYS))
-//#define HAL_ICACHE_SETS (HAL_ICACHE_SIZE/(HAL_ICACHE_LINE_SIZE*HAL_ICACHE_WAYS))
-
-//-----------------------------------------------------------------------------
-// Global control of data cache
-
-// Enable the data cache
-#define HAL_DCACHE_ENABLE()
-
-// Disable the data cache
-#define HAL_DCACHE_DISABLE()
-
-// Invalidate the entire cache
-#define HAL_DCACHE_INVALIDATE_ALL()
-
-// Synchronize the contents of the cache with memory.
-#define HAL_DCACHE_SYNC()
-
-// Purge contents of data cache
-#define HAL_DCACHE_PURGE_ALL()
-
-// Query the state of the data cache (does not affect the caching)
-#define HAL_DCACHE_IS_ENABLED(_state_)          \
-    CYG_MACRO_START                             \
-    (_state_) = 0;                              \
-    CYG_MACRO_END
-
-// Set the data cache refill burst size
-//#define HAL_DCACHE_BURST_SIZE(_size_)
-
-// Set the data cache write mode
-//#define HAL_DCACHE_WRITE_MODE( _mode_ )
-
-//#define HAL_DCACHE_WRITETHRU_MODE       0
-//#define HAL_DCACHE_WRITEBACK_MODE       1
-
-// Load the contents of the given address range into the data cache
-// and then lock the cache so that it stays there.
-//#define HAL_DCACHE_LOCK(_base_, _size_)
-
-// Undo a previous lock operation
-//#define HAL_DCACHE_UNLOCK(_base_, _size_)
-
-// Unlock entire cache
-//#define HAL_DCACHE_UNLOCK_ALL()
-
-//-----------------------------------------------------------------------------
-// Data cache line control
-
-// Allocate cache lines for the given address range without reading its
-// contents from memory.
-//#define HAL_DCACHE_ALLOCATE( _base_ , _size_ )
-
-// Write dirty cache lines to memory and invalidate the cache entries
-// for the given address range.
-//#define HAL_DCACHE_FLUSH( _base_ , _size_ )
-
-// Invalidate cache lines in the given range without writing to memory.
-//#define HAL_DCACHE_INVALIDATE( _base_ , _size_ )
-
-// Write dirty cache lines to memory for the given address range.
-//#define HAL_DCACHE_STORE( _base_ , _size_ )
-
-// Preread the given range into the cache with the intention of reading
-// from it later.
-//#define HAL_DCACHE_READ_HINT( _base_ , _size_ )
-
-// Preread the given range into the cache with the intention of writing
-// to it later.
-//#define HAL_DCACHE_WRITE_HINT( _base_ , _size_ )
-
-// Allocate and zero the cache lines associated with the given range.
-//#define HAL_DCACHE_ZERO( _base_ , _size_ )
-
-//-----------------------------------------------------------------------------
-// Global control of Instruction cache
-
-// Enable the instruction cache
-#define HAL_ICACHE_ENABLE()
-
-// Disable the instruction cache
-#define HAL_ICACHE_DISABLE()
-
-// Invalidate the entire cache
-#define HAL_ICACHE_INVALIDATE_ALL()
-
-// Synchronize the contents of the cache with memory.
-#define HAL_ICACHE_SYNC()
-
-// Query the state of the instruction cache (does not affect the caching)
-#define HAL_ICACHE_IS_ENABLED(_state_)          \
-    CYG_MACRO_START                             \
-    (_state_) = 0;                              \
-    CYG_MACRO_END
-
-// Set the instruction cache refill burst size
-//#define HAL_ICACHE_BURST_SIZE(_size_)
-
-// Load the contents of the given address range into the instruction cache
-// and then lock the cache so that it stays there.
-//#define HAL_ICACHE_LOCK(_base_, _size_)
-
-// Undo a previous lock operation
-//#define HAL_ICACHE_UNLOCK(_base_, _size_)
-
-// Unlock entire cache
-//#define HAL_ICACHE_UNLOCK_ALL()
-
-//-----------------------------------------------------------------------------
-// Instruction cache line control
-
-// Invalidate cache lines in the given range without writing to memory.
-//#define HAL_ICACHE_INVALIDATE( _base_ , _size_ )
-
-#else
-#error Unknown AT91SAM variant
-#endif
-
 //-----------------------------------------------------------------------------
 #endif // ifndef CYGONCE_HAL_CACHE_H
 // End of hal_cache.h
