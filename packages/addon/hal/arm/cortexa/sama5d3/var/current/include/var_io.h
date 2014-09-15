@@ -60,7 +60,8 @@
 //    SAM9-0001  2011/04/06 TuPN     Update define of IO PINs
 //
 // =============================================================================
-
+#include <pkgconf/system.h>
+#include <cyg/hal/plf_io_sama5d3.h>
 #include <cyg/hal/plf_io.h>
 
 //=============================================================================
@@ -1475,7 +1476,9 @@
 #define AT91_PIO_OWER  0xa0  // Output Write Enable Register
 #define AT91_PIO_OWDR  0xa4  // Output Write Disable Register
 #define AT91_PIO_OWSR  0xa8  // Output Write Status Register
-#else // CYGHWR_HAL_ARM_AT91SAM9
+#elif defined(CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR)// CYGHWR_HAL_ARM_AT91SAM9
+
+#else
 #error Unknown AT91 variant
 #endif
 
@@ -1961,26 +1964,6 @@
 //=============================================================================
 // Power Saving or Management
 
-#if defined(CYGHWR_HAL_ARM_AT91_R40807) || \
-    defined(CYGHWR_HAL_ARM_AT91_R40008)
-
-// Power Saving
-
-#ifndef AT91_PS
-#define AT91_PS         0xFFFF4000
-#endif
-
-#define AT91_PS_CR        0x000    // Control
-#define AT91_PS_CR_CPU    (1<<0)   // Disable CPU clock (idle mode)
-#define AT91_PS_PCER      0x004    // Peripheral clock enable
-#define AT91_PS_PCDR      0x008    // Peripheral clock disable
-#define AT91_PS_PCSR      0x00c    // Peripheral clock status
-
-#elif defined(CYGHWR_HAL_ARM_AT91_M42800A) || \
-      defined(CYGHWR_HAL_ARM_AT91_M55800A) || \
-      defined(CYGHWR_HAL_ARM_AT91SAM7) || \
-      defined(CYGHWR_HAL_ARM_AT91SAM9)
-
 // (Advanced) Power Management
 
 #ifndef AT91_PMC
@@ -1989,7 +1972,6 @@
 
 //SAM9X25-0003.ADD.Start
 // Override registers of PMC in [plf_io.h]
-#if! defined AT91_PMC_REGISTERS_OVERRIDE
 //SAM9X25-0003.ADD.End
 #define AT91_PMC_SCER           0x00
 #define AT91_PMC_SCDR           0x04
@@ -2017,191 +1999,12 @@
 #define AT91_PMC_IMR            0x3c
 #endif
 
-#if defined(CYGHWR_HAL_ARM_AT91_M42800A)
-
-#define AT91_PMC_PCER_US0       (1<<2)
-#define AT91_PMC_PCER_US1       (1<<3)
-#define AT91_PMC_PCER_SPIA      (1<<4)
-#define AT91_PMC_PCER_SPIB      (1<<5)
-#define AT91_PMC_PCER_TC0       (1<<6)
-#define AT91_PMC_PCER_TC1       (1<<7)
-#define AT91_PMC_PCER_TC2       (1<<8)
-#define AT91_PMC_PCER_TC3       (1<<9)
-#define AT91_PMC_PCER_TC4       (1<<10)
-#define AT91_PMC_PCER_TC5       (1<<11)
-#define AT91_PMC_PCER_PIOA      (1<<13)
-#define AT91_PMC_PCER_PIOB      (1<<14)
-
-#define AT91_PMC_CGMR_PRES_NONE       0
-#define AT91_PMC_CGMR_PRES_DIV2       1
-#define AT91_PMC_CGMR_PRES_DIV4       2
-#define AT91_PMC_CGMR_PRES_DIV8       3
-#define AT91_PMC_CGMR_PRES_DIV16      4
-#define AT91_PMC_CGMR_PRES_DIV32      5
-#define AT91_PMC_CGMR_PRES_DIV64      6
-#define AT91_PMC_CGMR_PRES_RES        7
-#define AT91_PMC_CGMR_PLLA         0x00
-#define AT91_PMC_CGMR_PLLB         0x08
-#define AT91_PMC_CGMR_MCK_SLCK   (0<<4)
-#define AT91_PMC_CGMR_MCK_MCK    (1<<4)
-#define AT91_PMC_CGMR_MCK_MCKINV (2<<4)
-#define AT91_PMC_CGMR_MCK_MCKD2  (3<<4)
-#define AT91_PMC_CGMR_MCKO_ENA   (0<<6)
-#define AT91_PMC_CGMR_MCKO_DIS   (1<<6)
-#define AT91_PMC_CGMR_CSS_SLCK   (0<<7)
-#define AT91_PMC_CGMR_CSS_PLL    (1<<7)
-
-#define AT91_PMC_CGMR_PLL_MUL(x) ((x)<<8)
-#define AT91_PMC_CGMR_PLL_CNT(x) ((x)<<24)
-
-#define AT91_PMC_SR_LOCK        0x01
-
-#elif defined(CYGHWR_HAL_ARM_AT91_M55800A)
-
-#define AT91_PMC_PCER_US0       (1<<2)
-#define AT91_PMC_PCER_US1       (1<<3)
-#define AT91_PMC_PCER_US2       (1<<4)
-#define AT91_PMC_PCER_SPI       (1<<5)
-#define AT91_PMC_PCER_TC0       (1<<6)
-#define AT91_PMC_PCER_TC1       (1<<7)
-#define AT91_PMC_PCER_TC2       (1<<8)
-#define AT91_PMC_PCER_TC3       (1<<9)
-#define AT91_PMC_PCER_TC4       (1<<10)
-#define AT91_PMC_PCER_TC5       (1<<11)
-#define AT91_PMC_PCER_PIOA      (1<<13)
-#define AT91_PMC_PCER_PIOB      (1<<14)
-#define AT91_PMC_PCER_ADC0      (1<<15)
-#define AT91_PMC_PCER_ADC1      (1<<16)
-#define AT91_PMC_PCER_DAC0      (1<<17)
-#define AT91_PMC_PCER_DAC1      (1<<18)
-
-#define AT91_PMC_CGMR_MOSC_XTAL       0
-#define AT91_PMC_CGMR_MOSC_BYP        1
-#define AT91_PMC_CGMR_MOSC_DIS   (0<<1)
-#define AT91_PMC_CGMR_MOSC_ENA   (1<<1)
-#define AT91_PMC_CGMR_MCKO_ENA   (0<<2)
-#define AT91_PMC_CGMR_MCKO_DIS   (1<<2)
-#define AT91_PMC_CGMR_PRES_NONE  (0<<4)
-#define AT91_PMC_CGMR_PRES_DIV2  (1<<4)
-#define AT91_PMC_CGMR_PRES_DIV4  (2<<4)
-#define AT91_PMC_CGMR_PRES_DIV8  (3<<4)
-#define AT91_PMC_CGMR_PRES_DIV16 (4<<4)
-#define AT91_PMC_CGMR_PRES_DIV32 (5<<4)
-#define AT91_PMC_CGMR_PRES_DIV64 (6<<4)
-#define AT91_PMC_CGMR_PRES_RES   (7<<4)
-#define AT91_PMC_CGMR_CSS_LF     (0<<14)
-#define AT91_PMC_CGMR_CSS_MOSC   (1<<14)
-#define AT91_PMC_CGMR_CSS_PLL    (2<<14)
-#define AT91_PMC_CGMR_CSS_RES    (3<<14)
-
-#define AT91_PMC_CGMR_PLL_MUL(x) ((x)<<8)
-#define AT91_PMC_CGMR_OSC_CNT(x) ((x)<<16)
-#define AT91_PMC_CGMR_PLL_CNT(x) ((x)<<24)
-
-#define AT91_PMC_PCR            0x28
-#define AT91_PMC_PCR_SHDALC     1
-#define AT91_PMC_PCR_WKACKC     2
-
-#define AT91_PMC_PMR            0x2c
-#define AT91_PMC_PMR_SHDALS_TRI         0
-#define AT91_PMC_PMR_SHDALS_LEVEL0      1
-#define AT91_PMC_PMR_SHDALS_LEVEL1      2
-#define AT91_PMC_PMR_SHDALS_RES         3
-#define AT91_PMC_PMR_WKACKS_TRI    (0<<2)
-#define AT91_PMC_PMR_WKACKS_LEVEL0 (1<<2)
-#define AT91_PMC_PMR_WKACKS_LEVEL1 (2<<2)
-#define AT91_PMC_PMR_WKACKS_RES    (3<<2)
-#define AT91_PMC_PMR_ALWKEN        (1<<4)
-#define AT91_PMC_PMR_ALSHEN        (1<<5)
-
-#define AT91_PMC_PMR_WKEDG_NONE    (0<<6)
-#define AT91_PMC_PMR_WKEDG_POS     (1<<6)
-#define AT91_PMC_PMR_WKEDG_NEG     (2<<6)
-#define AT91_PMC_PMR_WKEDG_BOTH    (3<<6)
-
-#define AT91_PMC_SR_MOSCS       0x01
-#define AT91_PMC_SR_LOCK        0x02
-
-#elif defined(CYGHWR_HAL_ARM_AT91_JTST)
-// No power management control for the JTST
-
-#elif defined(CYGHWR_HAL_ARM_AT91SAM7S)
-#define AT91_PMC_SCER_PCK  (1 << 0) // Processor Clock
-#define AT91_PMC_SCER_UDP  (1 << 7) // USB Device Clock
-#define AT91_PMC_SCER_PCK0 (1 << 8) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK1 (1 << 9) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK2 (1 << 10) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK3 (1 << 11) // Programmable Clock Output
-
-#define AT91_PMC_PCER_PIOA (1 << 2) // Parallel IO Controller
-#define AT91_PMC_PCER_ADC  (1 << 4) // Analog-to-Digital Converter
-#define AT91_PMC_PCER_SPI  (1 << 5) // Serial Peripheral Interface
-#define AT91_PMC_PCER_US0  (1 << 6) // USART 0
-#define AT91_PMC_PCER_US1  (1 << 7) // USART 1
-#define AT91_PMC_PCER_SSC  (1 << 8) // Serial Synchronous Controller
-#define AT91_PMC_PCER_TWI  (1 << 9) // Two-Wire Interface
-#define AT91_PMC_PCER_PWMC (1 <<10) // PWM Controller
-#define AT91_PMC_PCER_UDP  (1 <<11) // USB Device Port
-#define AT91_PMC_PCER_TC0  (1 <<12) // Timer Counter 0
-#define AT91_PMC_PCER_TC1  (1 <<13) // Timer Counter 1
-#define AT91_PMC_PCER_TC2  (1 <<14) // Timer Counter 2
-
-#elif defined(CYGHWR_HAL_ARM_AT91SAM7X)
-#define AT91_PMC_SCER_PCK  (1 << 0) // Processor Clock
-#define AT91_PMC_SCER_UDP  (1 << 7) // USB Device Clock
-#define AT91_PMC_SCER_PCK0 (1 << 8) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK1 (1 << 9) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK2 (1 << 10) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK3 (1 << 11) // Programmable Clock Output
-
-#define AT91_PMC_PCER_PIOA (1 << 2) // Parallel IO Controller
-#define AT91_PMC_PCER_PIOB (1 << 3) // Parallel IO Controller
-#define AT91_PMC_PCER_SPI  (1 << 4) // Serial Peripheral Interface
-#define AT91_PMC_PCER_SPI1 (1 << 5) // Serial Peripheral Interface
-#define AT91_PMC_PCER_US0  (1 << 6) // USART 0
-#define AT91_PMC_PCER_US1  (1 << 7) // USART 1
-#define AT91_PMC_PCER_SSC  (1 << 8) // Serial Synchronous Controller
-#define AT91_PMC_PCER_TWI  (1 << 9) // Two-Wire Interface
-#define AT91_PMC_PCER_PWMC (1 <<10) // PWM Controller
-#define AT91_PMC_PCER_UDP  (1 <<11) // USB Device Port
-#define AT91_PMC_PCER_TC0  (1 <<12) // Timer Counter 0
-#define AT91_PMC_PCER_TC1  (1 <<13) // Timer Counter 1
-#define AT91_PMC_PCER_TC2  (1 <<14) // Timer Counter 2
-#define AT91_PMC_PCER_CAN  (1 <<15) // Controller Area Network
-#define AT91_PMC_PCER_EMAC (1 <<16) // Ethernet MAC
-#define AT91_PMC_PCER_ADC  (1 <<17) // Analog-to-Digital Converter
-
-#elif defined(CYGHWR_HAL_ARM_AT91SAM7SE)
-#define AT91_PMC_SCER_PCK  (1 << 0) // Processor Clock
-#define AT91_PMC_SCER_UDP  (1 << 7) // USB Device Clock
-#define AT91_PMC_SCER_PCK0 (1 << 8) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK1 (1 << 9) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK2 (1 << 10) // Programmable Clock Output
-#define AT91_PMC_SCER_PCK3 (1 << 11) // Programmable Clock Output
-
-#define AT91_PMC_PCER_PIOA (1 << 2) // Parallel IO Controller
-#define AT91_PMC_PCER_PIOB (1 << 3) // Parallel IO Controller
-#define AT91_PMC_PCER_PIOC (1 << 4) // Parallel IO Controller
-#define AT91_PMC_PCER_SPI  (1 << 5) // Serial Peripheral Interface
-#define AT91_PMC_PCER_US0  (1 << 6) // USART 0
-#define AT91_PMC_PCER_US1  (1 << 7) // USART 1
-#define AT91_PMC_PCER_SSC  (1 << 8) // Serial Synchronous Controller
-#define AT91_PMC_PCER_TWI  (1 << 9) // Two-Wire Interface
-#define AT91_PMC_PCER_PWMC (1 <<10) // PWM Controller
-#define AT91_PMC_PCER_UDP  (1 <<11) // USB Device Port
-#define AT91_PMC_PCER_TC0  (1 <<12) // Timer Counter 0
-#define AT91_PMC_PCER_TC1  (1 <<13) // Timer Counter 1
-#define AT91_PMC_PCER_TC2  (1 <<14) // Timer Counter 2
-#define AT91_PMC_PCER_ADC  (1 <<15) // Analog-to-Digital Converter
-
-#elif defined(CYGHWR_HAL_ARM_AT91SAM9)
-
 #define AT91_PMC_SCER_PCK  (1 << 0) // Processor Clock
 #define AT91_PMC_SCER_UHP  (1 << 6) // USB Host Clock
 #define AT91_PMC_SCER_UDP  (1 << 7) // USB Device Clock
 #define AT91_PMC_SCER_PCK0 (1 << 8) // Programmable Clock Output
 #define AT91_PMC_SCER_PCK1 (1 << 9) // Programmable Clock Output
-
+#if 0
 #define AT91_PMC_PCER_FIQ  (1 << 0) // Advanced Interrupt Controller FIQ
 #define AT91_PMC_PCER_SYSC (1 << 1) // System Controller Interrupt
 #define AT91_PMC_PCER_PIOA (1 << 2) // Parallel IO Controller
@@ -2232,17 +2035,7 @@
 #define AT91_PMC_PCER_IRQ0 (1 <<29) // Advanced Interrupt Controller IRQ0
 #define AT91_PMC_PCER_IRQ1 (1 <<30) // Advanced Interrupt Controller IRQ1
 #define AT91_PMC_PCER_IRQ2 (1 <<31) // Advanced Interrupt Controller IRQ2
-
-#else // Something unknown
-
-#error Unknown AT91 variant
-
 #endif
-//SAM9X25-0003.ADD.Start
-#endif /* AT91_PMC_REGISTERS_OVERRIDE */
-//SAM9X25-0003.ADD.End
-#endif
-
 //=============================================================================
 // Watchdog
 
@@ -2348,8 +2141,6 @@
 //=============================================================================
 // Watchdog Timer Controller
 
-#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
-
 #ifndef AT91_WDTC
 #define AT91_WDTC 0xFFFFFD40
 #endif
@@ -2372,12 +2163,9 @@
 #define HAL_WATCHDOG_RESET \
   HAL_WRITE_UINT32(AT91_WDTC + AT91_WDTC_WDCR, AT91_WDTC_WDCR_RELOAD | AT91_WDTC_WDCR_KEY)
 
-#endif //CYGHWR_HAL_ARM_AT91SAM7 || CYGHWR_HAL_ARM_AT91SAM9
 
 //=============================================================================
 // Reset Controller
-
-#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_RST
 #define AT91_RST 0xFFFFFD00
@@ -2404,8 +2192,6 @@
 #define AT91_RST_RMR_URSTIEN (1 << 4)  // User Reset Interrupt Enabled
 #define AT91_RST_RMR_BODIEN  (1 << 16) // Brownout Dection Interrupt Enabled
 #define AT91_RST_RMR_KEY     (0xA5 << 24) // Key
-
-#endif
 
 //=============================================================================
 // Memory Controller
@@ -2504,8 +2290,6 @@
 
 //=============================================================================
 // Debug Unit
-
-#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_DBG
 #define AT91_DBG 0xFFFFF200
@@ -2616,12 +2400,9 @@
 #define AT91_DBG_TNCR 0x11c // Transmit Next Counter Register
 #define AT91_DBG_PTCR 0x120 // PDC Transfer Control Register
 #define AT91_DBG_PTSR 0x124 // PDC Transfer Status Register
-#endif
 
 //=============================================================================
 // Periodic Interval Timer Controller
-
-#if defined(CYGHWR_HAL_ARM_AT91SAM7) || defined(CYGHWR_HAL_ARM_AT91SAM9)
 
 #ifndef AT91_PITC
 #define AT91_PITC 0xfffffd30
@@ -2635,7 +2416,6 @@
 #define AT91_PITC_PIVR 0x08  // Period Interval Status Register
 #define AT91_PITC_PIIR 0x0C  // Period Interval Image Register
 #define AT91_PITC_VALUE_MASK 0x000fffff  // 20-bit period value
-#endif
 
 //=============================================================================
 // Real Time Timer Controller

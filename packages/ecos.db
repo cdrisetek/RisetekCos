@@ -5095,5 +5095,32 @@ target at91sam9260ek {
 	Atmel AT91SAM9260-EK evaluation board."
 }
 
+package CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR {
+        alias           { "atmel at91sama5d3x variant" sama5d3 }
+        directory       addon/hal/arm/cortexa/sama5d3/var
+        script          hal_arm_cortexa_sama5d3.cdl
+        description		"atmel at91sama5d3x variant"
+}
+
+package CYGPKG_HAL_XPLAINED {
+        alias           { "embedest xplained" xplained }
+        directory       addon/hal/arm/cortexa/sama5d3/xplained
+        script          board.cdl
+        description		"embedest xplained"
+}
+
+target xplained {
+	alias { "Atmel AT91SAMA5D3 XPLAINED board" sama5d3 xplained }
+	packages {
+		CYGPKG_HAL_ARM
+		CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR
+		CYGPKG_HAL_XPLAINED
+		CYGPKG_ERROR
+	}
+	description "
+	The xplained target provides the packages needed to run eCos on an
+	Atmel XPLAINED evaluation board."
+}
+
 # ==========================================================================
 # End of ecos.db

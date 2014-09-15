@@ -9,28 +9,27 @@
 cdl_package CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR {
     display       "Atmel AT91SAMA5D3 HAL"
     parent        CYGPKG_HAL_ARM
+    implements    CYGINT_HAL_ARM_ARCH_ARM9
     implements    CYGINT_HAL_ARM_ARCH_CORTEXA_SAMA5D3
+    
     hardware
     include_dir   cyg/hal
 
     description   "ATMEL AT91SAMA5D3 HAL"
 
-    compile       at91_misc.c		\
-    			  at91sam9260_hal_io.c		\
-    			  timer_pit.c				\
-    			  device_misc.c				\
-    			  mmu.c
+    compile       at91_misc.c				\
+    			  timer_pit.c
 
     implements    CYGINT_HAL_DEBUG_GDB_STUBS
     implements    CYGINT_HAL_DEBUG_GDB_STUBS_BREAK
     implements    CYGINT_HAL_VIRTUAL_VECTOR_SUPPORT
     implements    CYGINT_HAL_ARM_THUMB_ARCH
-	implements    CYGINT_HAL_ARM_MEM_REAL_REGION_TOP
+#	implements    CYGINT_HAL_ARM_MEM_REAL_REGION_TOP
 	
 
     define_proc {
         puts $::cdl_system_header "#define CYGBLD_HAL_TARGET_H   <pkgconf/hal_arm.h>"
-        puts $::cdl_system_header "#define CYGBLD_HAL_VARIANT_H  <pkgconf/hal_arm_cortexa_sama5d3.h>"
+        puts $::cdl_system_header "#define CYGBLD_HAL_VARIANT_H  <pkgconf/hal_arm_cortexa_sama5d3_var.h>"
         puts $::cdl_system_header "#define CYGBLD_HAL_ARM_VAR_IO_H"
         puts $::cdl_system_header "#define CYGBLD_HAL_ARM_VAR_ARCH_H"
 
@@ -141,7 +140,7 @@ cdl_package CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR {
         active_if     CYGINT_HAL_SERIAL_DBG_HW
         active_if     !CYGBLD_HAL_SERIAL_UART
         requires      CYGINT_HAL_SYS_INTERRUPT
-        default_value 0
+        default_value 1
 
         compile       hal_diag_dbg.c 
         requires      CYGNUM_HAL_VIRTUAL_VECTOR_DEBUG_CHANNEL == 0
@@ -251,7 +250,7 @@ cdl_package CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR {
             flavor  data
             no_define
             default_value { CYGBLD_GLOBAL_WARNFLAGS . CYGBLD_ARCH_CFLAGS . (CYGPKG_BACKTRACE ? " -fno-omit-frame-pointer -mapcs-frame " : "") .
-                            "-mcpu=arm926ej-s -pipe -g -O2 -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions" }
+                            "-mcpu=cortex-a5 -pipe -g -O2 -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions" }
             description   "
                 This option controls the global compiler flags which are used to
                 compile all packages by default. Individual packages may define
@@ -262,7 +261,7 @@ cdl_package CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR {
             display "Global linker flags"
             flavor  data
             no_define
-            default_value { CYGBLD_ARCH_LDFLAGS . "-mcpu=arm926ej-s -pipe -Wl,--gc-sections -Wl,-static -g -O2 -nostdlib" }
+            default_value { CYGBLD_ARCH_LDFLAGS . "-mcpu=cortex-a5 -pipe -Wl,--gc-sections -Wl,-static -g -O2 -nostdlib" }
             description   "
                 This option controls the global linker flags. Individual
                 packages may define options which override these global flags."

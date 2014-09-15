@@ -1,8 +1,8 @@
 #ifndef CYGONCE_HAL_MACRO_H
 #define CYGONCE_HAL_MACRO_H
-#include <cyg/hal/helper_nand_boot.h>
-#include <cyg/hal/helper_spi_boot.h>
-#include <cyg/hal/helper_sdram_init.h>
+//#include <cyg/hal/helper_nand_boot.h>
+//#include <cyg/hal/helper_spi_boot.h>
+//#include <cyg/hal/helper_sdram_init.h>
 
 #define CYGNUM_HAL_ARM_VECTOR_0x14 4096
 
@@ -96,7 +96,7 @@ __EBI_init__:
 		ldr		r1,=AT91C_PIOC_IFER
 		ldr		r2,=AT91C_PIO_PC13
 		str		r2,[r1]
-#if		( CYGHWR_CPLD_HW > 0)
+#ifdef	CYGHWR_CPLD_HW
 		ldr		r1,=AT91C_SMC_SETUP0
 		ldr		r2,=(AT91C_SM_NWE_SETUP0 | AT91C_SM_NCS_WR_SETUP0 | AT91C_SM_NRD_SETUP0 | AT91C_SM_NCS_RD_SETUP0)
 		str		r2,[r1]
@@ -198,25 +198,18 @@ __EBI_init__:
 
 // xplained
 /* PCK = 528MHz, MCK = 132MHz */
-#define PLLA_MULA		43
-#define BOARD_PCK		((unsigned long)(BOARD_MAINOSC * (PLLA_MULA + 1)))
-#define BOARD_MCK		((unsigned long)((BOARD_MAINOSC * (PLLA_MULA + 1)) / 4))
+//#define BOARD_PCK		((unsigned long)(BOARD_MAINOSC * (PLLA_MULA + 1)))
+//#define BOARD_MCK		((unsigned long)((BOARD_MAINOSC * (PLLA_MULA + 1)) / 4))
 
 // SAMA5D3
+#define PLLA_MULA		43
 #define DEFAULT_MAINOSC				12000000
 #define DEFAULT_PMC_PCK				(DEFAULT_MAINOSC * (PLLA_MULA + 1))					// 528000000 Hz
-#define DEFAULT_PMC_MCK				(DEFAULT_PMC_PCK / 4))								// 132000000 Hz
+#define DEFAULT_PMC_MCK				(DEFAULT_PMC_PCK / 4)								// 132000000 Hz
 
 
 .macro	_AT91SAM9_PLL_DBGU_INIT
-		b	CPUMODEL
-		.align 4
-		plla_value:				.word	AT91C_PLLA_VALUE
-		pmc_mckr_value:			.word	PMC_MCKR_VALUE
-		icplla_value:			.word	ICPLLA_VALUE
-		pmc_mck:				.word	PMC_MCK
-		DBGU_BRGR_VALUE:		.word	((PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
-	CPUMODEL:
+		ldr		r0,=AT91_PMC
 	setPLL:
 	/* PMC Clock Generator Main Oscillator Register,The Main Oscillator is enabled. */
 		ldr		r1,=( (1 << 29) | (PLLA_MULA << 18) | AT91_PMC_PLLR_OUT_0 | (0x3F << 8) | 0x1 )	// Fin=12.000MHz 528.000 MHz for PLLA
@@ -331,7 +324,7 @@ __EBI_init__:
 		ands	r1,r1,#AT91_PMC_SR_MCKRDY
 		beq		checkMCKRDY9
 
-		/*Ê±ÖÓ£º*/
+		/* System CLK */
 	PLLReady:
 		ldr		r1,=~(AT91_PMC_SCER_PCK)
 		str		r1,[r0,#AT91_PMC_SCDR]
@@ -348,7 +341,6 @@ __EBI_init__:
 		ldr r3, [r1, #AT91_PIO_ABCDSR2]
  		bic r3, r3, r2
  		str	r3,	[r1, #AT91_PIO_ABCDSR2]
-		ldr	r1,	=AT91C_PIOB_PDR
 		str	r2,	[r1, #AT91_PIO_PDR]
 
 		ldr	r1, =AT91_DBG	//AT91C_DBGU_CR

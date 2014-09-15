@@ -52,6 +52,13 @@
 //
 //=============================================================================
 
+// TODO: it should be somewhere?
+#define SDRAM_PHYS_BASE			(0x20000000)
+#define SDRAM_SIZE_8M			(8 * 1000000)
+#define START_ADDR				(0x20080000)
+#define	REDBOOT_SIZE			(512 * 0x400)				// 512K
+
+
 // Cache translation
 #ifndef CYGPKG_REDBOOT
 #define CYGARC_KSEG_MASK             0xF0000000
@@ -79,14 +86,10 @@
 #define AT91_PIOC   0xFFFFF600
 #define AT91_PIOD   0xFFFFF800
 #define AT91_PIOE   0xFFFFFA00
-#define AT91_PIO    AT91_PIOA
 
 //Select POI controllers
 #define AT91_PIO_ABCDSR1    0x70    //POI Peripheral Select Register 1
 #define AT91_PIO_ABCDSR2    0x74    //POI Peripheral Select Register 2
-
-// Periodic Interval Timer Controller
-#define AT91_PITC           0xFFFFFD30
 
 // Bus Matrix
 #define AT91_MATRIX         0xFFFFEA00
@@ -115,7 +118,7 @@
 #define AT91_SMC_DELAY8     0xDC // A24..A25
 
 // Watchdog
-#define AT91_WD             0xFFFFFD40
+#define AT91_WD             0xFFFFFE40
 
 // Real Time Timer Controller
 #define AT91_RTTC           0xFFFFFD20

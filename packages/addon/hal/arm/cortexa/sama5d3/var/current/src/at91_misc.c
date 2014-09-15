@@ -97,8 +97,7 @@ void hal_hardware_init(void)
     HAL_ICACHE_ENABLE();
 #endif
 }
-
-#if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
+#ifdef CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
 // Decode a system interrupt. Not all systems have all interrupts. So
 // code will only be generated for those interrupts which have a
 // defined value.
@@ -188,7 +187,6 @@ static int sys_irq_handler(void)
   return CYGNUM_HAL_INTERRUPT_NONE;
 }
 #endif
-
 // -------------------------------------------------------------------------
 // This routine is called to respond to a hardware interrupt (IRQ).  It
 // should interrogate the hardware and return the IRQ vector number.
@@ -211,10 +209,10 @@ int hal_IRQ_handler(void)
 #endif
     // Calculate active interrupt (updates ISR)
     HAL_READ_UINT32(AT91_AIC+AT91_AIC_IVR, ivr);
-
+    ivr = ivr;
     HAL_READ_UINT32(AT91_AIC+AT91_AIC_ISR, irq_num);
 
-#if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
+#ifdef CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
     if (irq_num == CYGNUM_HAL_INTERRUPT_SYS) {
       // determine the source of the system interrupt
       irq_num = sys_irq_handler();
@@ -236,7 +234,7 @@ void hal_interrupt_mask(int vector)
     CYG_ASSERT(vector <= CYGNUM_HAL_ISR_MAX &&
                vector >= CYGNUM_HAL_ISR_MIN , "Invalid vector");
 
-#if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
+#ifdef CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
     if (vector >= 32) {
       HAL_WRITE_UINT32(AT91_AIC+AT91_AIC_IDCR, 
                        (1 << CYGINT_HAL_ARM_AT91_SYS_INTERRUPT));
@@ -251,7 +249,7 @@ void hal_interrupt_unmask(int vector)
     CYG_ASSERT(vector <= CYGNUM_HAL_ISR_MAX &&
                vector >= CYGNUM_HAL_ISR_MIN , "Invalid vector");
 
-#if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
+#ifdef CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
     if (vector >= 32) {
       hal_interrupt_configure(CYGINT_HAL_ARM_AT91_SYS_INTERRUPT, true, true);
       HAL_WRITE_UINT32(AT91_AIC+AT91_AIC_IECR, 
@@ -276,7 +274,7 @@ void hal_interrupt_configure(int vector, int level, int up)
     CYG_ASSERT(vector <= CYGNUM_HAL_ISR_MAX &&
                vector >= CYGNUM_HAL_ISR_MIN , "Invalid vector");
 
-#if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
+#ifdef CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
     if (vector >= 32) 
       return;
 #endif
@@ -305,7 +303,7 @@ void hal_interrupt_set_level(int vector, int level)
                vector >= CYGNUM_HAL_ISR_MIN , "Invalid vector");
     CYG_ASSERT(level >= 0 && level <= 7, "Invalid level");
 
-#if CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
+#ifdef CYGINT_HAL_ARM_AT91_SYS_INTERRUPT
     if (vector >= 32) 
       return;
 #endif

@@ -1,6 +1,6 @@
 //==========================================================================
 //
-//      mofei_misc.c
+//      misc.c
 //
 //==========================================================================
 
@@ -11,25 +11,18 @@
 #include <cyg/infra/cyg_type.h>         // base types
 #include <cyg/infra/cyg_trac.h>         // tracing macros
 #include <cyg/infra/cyg_ass.h>          // assertion macros
-
 #include <cyg/hal/hal_io.h>             // IO macros
 #include <cyg/hal/hal_arch.h>           // Register state info
 #include <cyg/hal/hal_diag.h>
 #include <cyg/hal/hal_intr.h>           // Interrupt names
-#include <cyg/hal/at91sam9260.h>         // Platform specifics
-
 #include <cyg/infra/diag.h>             // diag_printf
-
 #include <string.h>                     // memset
-#ifdef	CYGPKG_FREEBSD_MPD
-#include <mpd/modem_channel.h>
-#endif
 
 //----------------------------------------------------------------------------
 // Platform specific initialization
 // This routine sets the default GPIO condition
-void board_port_init(void)
-{
+void board_port_init(void) {
+#if 0
 	init_uart0_pio();
 	init_uart2_pio();
 
@@ -66,48 +59,9 @@ void board_port_init(void)
 	LED_P0_OFF;
 	LED_P1_OFF;
 	LED_P2_OFF;
-}
-void board_set_leds(int val, int onoff)
-{
-	if( val == 1 )
-	{
-		if( onoff )
-			LED_P1_ON;
-		else
-			LED_P1_OFF;
-	}
-	else if( val == 0 )
-	{
-		if( onoff )
-			LED_P0_ON;
-		else
-			LED_P0_OFF;
-	}
-	else if( val == 2 )
-	{
-		if( onoff )
-			LED_P2_ON;
-		else
-			LED_P2_OFF;
-	}
-}
-
-#ifdef	CYGPKG_FREEBSD_MPD
-void SetChannelPOWER(int channel , int onoff)
-{
-	if( onoff == 1)
-		DEASSERT_nRESET_PWR;
-	else
-		ASSERT_nRESET_PWR;
-}
-void modem_channel_toggle(int op, int channelnum) {
-	singal_modem_channel_toggle(op, channelnum);
-}
-
-// This function is for MC8785
-void modem_connector_resetpin_mc8785_fix(void) {
-	ASSERT_nRESET_GPRS;
-}
 #endif
+}
+void board_set_leds(int val, int onoff) {
+}
 //-----------------------------------------------------------------------------
-// End of mobileswitch_misc.c
+// End of misc.c

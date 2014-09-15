@@ -91,33 +91,10 @@ CYG_MACRO_END
 // processor. These implementations halt the system core clock.
 
 #ifndef HAL_IDLE_THREAD_ACTION
-
-
-#if defined(CYGHWR_HAL_ARM_AT91_R40807) || \
-    defined(CYGHWR_HAL_ARM_AT91_R40008)
-
-#define HAL_IDLE_THREAD_ACTION(_count_)                       \
-CYG_MACRO_START                                               \
-    HAL_WRITE_UINT32(AT91_PS+AT91_PS_CR, AT91_PS_CR_CPU);     \
-CYG_MACRO_END
-
-#elif defined(CYGHWR_HAL_ARM_AT91_M42800A) || \
-      defined(CYGHWR_HAL_ARM_AT91_M55800A) || \
-      defined(CYGHWR_HAL_ARM_AT91SAM7) || \
-      defined(CYGHWR_HAL_ARM_AT91SAM9)
-
 #define HAL_IDLE_THREAD_ACTION(_count_)                       \
 CYG_MACRO_START                                               \
     HAL_WRITE_UINT32(AT91_PMC+AT91_PMC_SCDR, 1);              \
 CYG_MACRO_END
-
-#elif defined(CYGHWR_HAL_ARM_AT91_JTST)
-// No idle action for the JTST
-#else
-#error Unknown AT91 variant
-
-#endif
-
 #endif
 
 //-----------------------------------------------------------------------------

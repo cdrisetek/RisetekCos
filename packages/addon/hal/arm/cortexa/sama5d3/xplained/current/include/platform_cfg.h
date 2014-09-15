@@ -1,6 +1,5 @@
 #ifndef PLATFORM_CFG_H
 #define PLATFORM_CFG_H
-#include <cyg/hal/memcfg.h>
 
 #define CONTROL_OUT_IO_B 																	\
 	(AT91C_PIO_PB16 | AT91C_PIO_PB17 | AT91C_PIO_PB18 | AT91C_PIO_PB30 | AT91C_PIO_PB31 )
