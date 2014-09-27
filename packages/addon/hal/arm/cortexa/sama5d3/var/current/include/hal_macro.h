@@ -202,7 +202,7 @@ __EBI_init__:
 //#define BOARD_MCK		((unsigned long)((BOARD_MAINOSC * (PLLA_MULA + 1)) / 4))
 
 // SAMA5D3
-#define PLLA_MULA		43
+#define PLLA_MULA					43
 #define DEFAULT_MAINOSC				12000000
 #define DEFAULT_PMC_PCK				(DEFAULT_MAINOSC * (PLLA_MULA + 1))					// 528000000 Hz
 #define DEFAULT_PMC_MCK				(DEFAULT_PMC_PCK / 4)								// 132000000 Hz
@@ -212,6 +212,9 @@ __EBI_init__:
 		ldr		r0,=AT91_PMC
 	setPLL:
 	/* PMC Clock Generator Main Oscillator Register,The Main Oscillator is enabled. */
+		// PMC Clock Generator PLLA Register
+		// Warning: Bit 29 must always be set to 1 when programming the CKGR_PLLAR
+		// DIVA set to 1, so Divider is bypassed
 		ldr		r1,=( (1 << 29) | (PLLA_MULA << 18) | AT91_PMC_PLLR_OUT_0 | (0x3F << 8) | 0x1 )	// Fin=12.000MHz 528.000 MHz for PLLA
 		str		r1,[r0,#AT91_PMC_PLLRA]
 	checkPLLA:
@@ -219,6 +222,7 @@ __EBI_init__:
 		ands	r1,r1,#AT91_PMC_SR_LOCKA
 		beq		checkPLLA
 
+		// PLL Charge Pump Current Register
 		ldr		r1,=(0x3 << 8)		// NOTE: TODO: Page 266, IPLL_PLLA should be 3
 		str		r1,[r0,#AT91_PMC_PLLICPR]
 
@@ -228,6 +232,7 @@ __EBI_init__:
 		 * wait for MCKRDY bit to be set in the PMC_SR register
 		*/
 		ldr		r1,[r0,#AT91_PMC_MCKR]
+		// Master/Processor Clock Prescaler clear, so it should be Selected clock
 		bic		r1, r1, #(0x7 << 4)
 		str		r1,[r0,#AT91_PMC_MCKR]
 	checkMCKRDY2:
@@ -325,7 +330,6 @@ __EBI_init__:
 		beq		checkMCKRDY9
 
 		/* System CLK */
-	PLLReady:
 		ldr		r1,=~(AT91_PMC_SCER_PCK)
 		str		r1,[r0,#AT91_PMC_SCDR]
 		ldr		r1,=(AT91_PMC_SCER_PCK | AT91_PMC_SCER_DDRCK | AT91_PMC_PCER_PIOB | AT91_PMC_PCER_DBGU)
@@ -350,12 +354,21 @@ __EBI_init__:
 		str	r2,[r1, #AT91_DBG_MR]
 		ldr	r2, =((DEFAULT_PMC_MCK / ( CYGNUM_HAL_VIRTUAL_VECTOR_CONSOLE_CHANNEL_BAUD << 4)) + 1)
 		str	r2,[r1, #AT91_DBG_BRGR]
+loop_show:
+		BOOT_SHOW_DBGU_CHAR '@'
+		b	loop_show
+
 #ifdef	CYGPKG_HAL_BOOT_SPI
 		ldr		r10,[r1, #AT91_DBG_C1R]
 		SHOW_REG_CHARS
 		BOOT_SHOW_DBGU_CHAR ' '
 #endif
 .endm
+
+.macro	DBGU_IO_INIT
+.endm
+
+
 #endif	// CYGONCE_HAL_MACRO_H
 
 
