@@ -63,25 +63,13 @@
 		ldr		r2,=AT91_WDTC_WDMR_DIS
 		str		r2,[r1, #AT91_WDTC_WDMR]
 #endif
-#if	0		   		    	// define raw_led_support!
-		// 首先确定 输出为 低。
-		ldr		r0,= AT91C_PIOB_CODR
-		ldr		r1,=CONTROL_OUT_IO_B
-		str		r1, [r0]
-		// 再确定这些端口是 IO 口。
-		ldr		r0,= AT91C_PIOB_PER
-		ldr		r1,=CONTROL_OUT_IO_B
-		str		r1, [r0]
-		// 确定是输出。
-		ldr		r0,= AT91C_PIOB_OER
-		ldr		r1,=CONTROL_OUT_IO_B
-		str		r1, [r0]
-		// 确定可写
-		ldr		r0,= AT91C_PIOB_OWER
-		ldr		r1,=CONTROL_OUT_IO_B
-		str		r1, [r0]
- //		RAW_LED_MACRO	0xff	// 让所有的灯都打开
-#endif
+// define raw_led_support!
+	 	ldr	r1,	=AT91_PIOE
+	 	ldr r2, =( (1 << (AT91_GPIO_PE23 & 0xFF)) | ( 1 << (AT91_GPIO_PE24 & 0xFF)))
+	   	str	r2,	[r1, #AT91_PIO_OWER]
+	 	str	r2,	[r1, #AT91_PIO_PER]
+	 	str	r2,	[r1, #AT91_PIO_OER]
+	 	str	r2,	[r1, #AT91_PIO_CODR];
 
 		_AT91SAM9_PLL_DBGU_INIT
 

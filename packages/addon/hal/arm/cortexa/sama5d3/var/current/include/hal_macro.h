@@ -120,6 +120,7 @@ __EBI_init__:
 .macro _disable_cache
 // Flush the entire dcache (and then both TLBs, just in case)
         mov     r0, #0
+#if 0
         mcr     p15,0,r0,c7,c6,0
         mcr     p15,0,r0,c8,c7,0
 
@@ -163,6 +164,7 @@ __EBI_init__:
 		mcr	MMU_CP, 0, r0, c7, c7, 0	/* flush v3/v4 cache */
 		mcr MMU_CP,0,r1,c7,c10,4 /* Drain Write Buffer */
 		mcr	MMU_CP, 0, r0, c8, c7, 0	/* flush v4 TLB */
+#endif
 .endm
 
 .macro  _turnon_mmu
@@ -332,20 +334,23 @@ __EBI_init__:
 		/* System CLK */
 		ldr		r1,=~(AT91_PMC_SCER_PCK)
 		str		r1,[r0,#AT91_PMC_SCDR]
-		ldr		r1,=(AT91_PMC_SCER_PCK | AT91_PMC_SCER_DDRCK | AT91_PMC_PCER_PIOB | AT91_PMC_PCER_DBGU)
+		ldr		r1,=(AT91_PMC_SCER_PCK | AT91_PMC_SCER_DDRCK)
 		str		r1,[r0,#AT91_PMC_SCER]
+		ldr		r1,=(AT91_PMC_PCER_PIOB | AT91_PMC_PCER_PIOE | AT91_PMC_PCER_DBGU)
+		str		r1,[r0,#AT91_PMC_PCER]
+
 	// Init DBGU
-		ldr	r1,	=AT91_PIOB
 		// Control B
+		ldr	r1,	=AT91_PIOB
 		ldr r2, =( (1 << (AT91_DBG_DRXD & 0xFF)) | ( 1 << (AT91_DBG_DTXD & 0xFF)))
-		// Peripheral A
+		str	r2,	[r1, #AT91_PIO_PDR]
+	// Peripheral A
 		ldr r3, [r1, #AT91_PIO_ABCDSR1]
 		bic r3, r3, r2
 		str	r3,	[r1, #AT91_PIO_ABCDSR1]
 		ldr r3, [r1, #AT91_PIO_ABCDSR2]
  		bic r3, r3, r2
  		str	r3,	[r1, #AT91_PIO_ABCDSR2]
-		str	r2,	[r1, #AT91_PIO_PDR]
 
 		ldr	r1, =AT91_DBG	//AT91C_DBGU_CR
 		ldr	r2, =(AT91_DBG_CR_RSTSTA|AT91_DBG_CR_TXEN|AT91_DBG_CR_RXEN)
@@ -356,7 +361,11 @@ __EBI_init__:
 		str	r2,[r1, #AT91_DBG_BRGR]
 loop_show:
 		BOOT_SHOW_DBGU_CHAR '@'
-		b	loop_show
+
+ 		 // Init LED
+	 	ldr	r1,	=AT91_PIOE
+	 	ldr r2, =( 1 << 24 )
+	 	str	r2,	[r1, #AT91_PIO_SODR];
 
 #ifdef	CYGPKG_HAL_BOOT_SPI
 		ldr		r10,[r1, #AT91_DBG_C1R]

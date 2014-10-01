@@ -1477,7 +1477,34 @@
 #define AT91_PIO_OWDR  0xa4  // Output Write Disable Register
 #define AT91_PIO_OWSR  0xa8  // Output Write Status Register
 #elif defined(CYGPKG_HAL_ARM_CORTEXA_SAMA5D3_VAR)// CYGHWR_HAL_ARM_AT91SAM9
+#define AT91_PIO_OER  0x10  // Output enable
+#define AT91_PIO_ODR  0x14  // Output disable
+#define AT91_PIO_OSR  0x18  // Output status
+#define AT91_PIO_IFER 0x20  // Input Filter enable
+#define AT91_PIO_IFDR 0x24  // Input Filter disable
+#define AT91_PIO_IFSR 0x28  // Input Filter status
+#define AT91_PIO_SODR 0x30  // Set out bits
+#define AT91_PIO_CODR 0x34  // Clear out bits
+#define AT91_PIO_ODSR 0x38  // Output data status
+#define AT91_PIO_PDSR 0x3C  // Pin data status
+#define AT91_PIO_IER  0x40  // Interrupt enable
+#define AT91_PIO_IDR  0x44  // Interrupt disable
+#define AT91_PIO_IMR  0x48  // Interrupt mask
+#define AT91_PIO_ISR  0x4C  // Interrupt status
 
+#define AT91_PIO_MDER  0x50  // Multi-drive Enable Register
+#define AT91_PIO_MDDR  0x54  // Multi-drive Disable Register
+#define AT91_PIO_MDSR  0x58  // Multi-drive Status Register
+#define AT91_PIO_PPUDR 0x60  // Pad Pull-up Disable Register
+#define AT91_PIO_PPUER 0x64  // Pad Pull-up Enable Register
+#define AT91_PIO_PPUSR 0x68  // Pad Pull-Up Status Register
+#define AT91_PIO_ASR   0x70  // Select A Register
+#define AT91_PIO_BSR   0x74  // Select B Regsiter
+#define AT91_PIO_ABS   0x78  // AB Select Regsiter
+#define AT91_PIO_OWER  0xa0  // Output Write Enable Register
+#define AT91_PIO_OWDR  0xa4  // Output Write Disable Register
+#define AT91_PIO_OWSR  0xa8  // Output Write Status Register
+#define AT91_PIO_WPMR  0xe4  // PIO Write Protection Mode Register
 #else
 #error Unknown AT91 variant
 #endif

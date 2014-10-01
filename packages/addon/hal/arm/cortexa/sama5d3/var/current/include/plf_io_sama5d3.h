@@ -278,11 +278,6 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 
 #define ID_PERIPH_COUNT (50) /**< \brief Number of peripheral IDs */
 
-
-
-
-
-
 #define AT91_PMC_PCER_FIQ           (1 << 0) // Advanced Interrupt Controller FIQ
 #define AT91_PMC_PCER_SYSC          (1 << 1) // System Controller Interrupt
 #define AT91_PMC_PCER_DBGU          (1 << 2) // Debug Unit Interrupt
@@ -291,6 +286,7 @@ extern cyg_uint32 hal_at91_us_baud(cyg_uint32 baud);
 #define AT91_PMC_PCER_PIOB          (1 << 7) // Parallel IO Controller
 #define AT91_PMC_PCER_PIOC          (1 << 8) // Parallel IO Controller
 #define AT91_PMC_PCER_PIOD          (1 << 9) // Parallel IO Controller
+#define AT91_PMC_PCER_PIOE          (1 << 10) // Parallel IO Controller
 #define AT91_PMC_PCER_US0           (1 << 12) // USART 0
 #define AT91_PMC_PCER_US1           (1 << 13) // USART 1
 #define AT91_PMC_PCER_US2           (1 << 14) // USART 2
