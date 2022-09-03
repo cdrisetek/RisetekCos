@@ -18,3 +18,9 @@
 <li>make编译链接</li>
 <li>在.profile里面加上ECOS_REPOSITORY=/vagrant/eCos/packages，并export ECOS_REPOSITORY后，可以不指明--srcdir</li>
 </ul>
+<h3>WSL 下构建ecosconfig工具</h3>
+<ul>
+<li>mkdir -p ~/targets && cd ~/targets</li>
+<li>./{path to}/host/configure && make</li>
+<li>./tools/configtool/standalone/common/ecosconfig</li>
+</ul>
