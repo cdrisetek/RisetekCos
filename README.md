@@ -1,4 +1,4 @@
-# Risetek eCos Host Project
+# Risetek eCos Host Project 【该项目不再维护，准备清理】
 
 ## 工具下载地址：
 - ftp://ftp.ecoscentric.com/pub/ecos/gnutools/i386linux/
